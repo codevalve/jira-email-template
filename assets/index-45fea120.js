@@ -1,4 +1,4 @@
-(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const a of document.querySelectorAll('link[rel="modulepreload"]'))o(a);new MutationObserver(a=>{for(const i of a)if(i.type==="childList")for(const n of i.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&o(n)}).observe(document,{childList:!0,subtree:!0});function r(a){const i={};return a.integrity&&(i.integrity=a.integrity),a.referrerPolicy&&(i.referrerPolicy=a.referrerPolicy),a.crossOrigin==="use-credentials"?i.credentials="include":a.crossOrigin==="anonymous"?i.credentials="omit":i.credentials="same-origin",i}function o(a){if(a.ep)return;a.ep=!0;const i=r(a);fetch(a.href,i)}})();const v={software:{mock:{issueKey:"PROJ-123",summary:"Implement new feature for user authentication",type:"Story",priority:"High",status:"In Progress",assignee:"John Smith",reporter:"Sarah Johnson",created:"2024-01-15 10:30 AM",updated:"2024-01-16 2:45 PM",description:"As a user, I want to be able to authenticate using SSO...",components:["Authentication","Security"],labels:["frontend","sprint-1"],sprint:"Sprint 5",storyPoints:"8",comments:[{author:"Mike Brown",content:"Should we consider adding OAuth support?",created:"2024-01-15 3:20 PM"},{author:"Sarah Johnson",content:"Yes, OAuth would be great. Let's also consider OpenID Connect.",created:"2024-01-15 4:15 PM"},{author:"John Smith",content:"I can help with the OAuth implementation. I've done it before.",created:"2024-01-16 9:30 AM"},{author:"Mike Brown",content:"Great! I'll create a technical design doc for review.",created:"2024-01-16 10:45 AM"},{author:"Sarah Johnson",content:"Technical design approved. Ready to start implementation.",created:"2024-01-16 2:30 PM"},{author:"John Smith",content:"I'll start working on this today.",created:"2024-01-16 2:45 PM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",assignee:"{{issue.assignee}}",reporter:"{{issue.reporter}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",components:"{{issue.components}}",labels:"{{issue.labels}}",sprint:"{{issue.sprint}}",storyPoints:"{{issue.storyPoints}}",comments:"{{issue.comments}}"}},servicedesk:{mock:{issueKey:"HELP-456",summary:"Cannot access email account",type:"IT Support",priority:"Medium",status:"Open",requestType:"Email Access",requester:"Jane Doe",assignee:"IT Support Team",created:"2024-01-15 9:15 AM",updated:"2024-01-15 9:30 AM",description:"I am unable to log into my work email since this morning...",impact:"Single user",sla:"4 hours",comments:[{author:"IT Support Team",content:"Have you tried resetting your password?",created:"2024-01-15 9:30 AM"},{author:"Jane Doe",content:"Yes, I tried that but still getting an error.",created:"2024-01-15 10:15 AM"},{author:"IT Support Team",content:"Can you share a screenshot of the error?",created:"2024-01-15 10:30 AM"},{author:"Jane Doe",content:"Screenshot attached. Error code is AUTH-123.",created:"2024-01-15 10:45 AM"},{author:"IT Support Team",content:"Thanks. This looks like an account lock. I'll unlock it now.",created:"2024-01-15 11:00 AM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",requestType:"{{issue.requestType}}",requester:"{{issue.requester}}",assignee:"{{issue.assignee}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",impact:"{{issue.impact}}",sla:"{{issue.sla}}",comments:"{{issue.comments}}"}},core:{mock:{issueKey:"TASK-789",summary:"Quarterly financial report preparation",type:"Task",priority:"Medium",status:"To Do",assignee:"Finance Team",reporter:"Department Head",created:"2024-01-15 11:00 AM",updated:"2024-01-15 11:00 AM",description:"Prepare Q4 2023 financial report including...",dueDate:"2024-01-31",category:"Finance",comments:[{author:"Department Head",content:"Please include the new revenue streams in this report.",created:"2024-01-15 11:30 AM"},{author:"Finance Team",content:"Will do. Do you want a breakdown by product line?",created:"2024-01-15 1:45 PM"},{author:"Department Head",content:"Yes, please include product line breakdown.",created:"2024-01-15 2:00 PM"},{author:"Finance Team",content:"First draft ready for review.",created:"2024-01-16 9:15 AM"},{author:"Marketing Lead",content:"Can we add a section comparing Q4 performance to previous quarters?",created:"2024-01-16 10:30 AM"},{author:"Finance Team",content:"Good suggestion. I'll add historical comparison charts.",created:"2024-01-16 11:45 AM"},{author:"Department Head",content:"Also include YoY growth metrics for each product line.",created:"2024-01-16 2:15 PM"},{author:"Finance Team",content:"Updated draft with historical comparisons and YoY metrics ready for review.",created:"2024-01-16 4:30 PM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",assignee:"{{issue.assignee}}",reporter:"{{issue.reporter}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",dueDate:"{{issue.dueDate}}",category:"{{issue.category}}",comments:"{{issue.comments}}"}}};let l="software",f="full",t=!1,c=!1,x="all",m="#0052CC",u="#E9EBEE";function w(){const s=t?v[l].smart:v[l].mock;let e="";return e+=`
+(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const a of document.querySelectorAll('link[rel="modulepreload"]'))r(a);new MutationObserver(a=>{for(const l of a)if(l.type==="childList")for(const i of l.addedNodes)i.tagName==="LINK"&&i.rel==="modulepreload"&&r(i)}).observe(document,{childList:!0,subtree:!0});function o(a){const l={};return a.integrity&&(l.integrity=a.integrity),a.referrerPolicy&&(l.referrerPolicy=a.referrerPolicy),a.crossOrigin==="use-credentials"?l.credentials="include":a.crossOrigin==="anonymous"?l.credentials="omit":l.credentials="same-origin",l}function r(a){if(a.ep)return;a.ep=!0;const l=o(a);fetch(a.href,l)}})();const v={software:{mock:{issueKey:"PROJ-123",summary:"Implement new feature for user authentication",type:"Story",priority:"High",status:"In Progress",assignee:"John Smith",reporter:"Sarah Johnson",created:"2024-01-15 10:30 AM",updated:"2024-01-16 2:45 PM",description:"As a user, I want to be able to authenticate using SSO...",components:["Authentication","Security"],labels:["frontend","sprint-1"],sprint:"Sprint 5",storyPoints:"8",comments:[{author:"Mike Brown",content:"Should we consider adding OAuth support?",created:"2024-01-15 3:20 PM"},{author:"Sarah Johnson",content:"Yes, OAuth would be great. Let's also consider OpenID Connect.",created:"2024-01-15 4:15 PM"},{author:"John Smith",content:"I can help with the OAuth implementation. I've done it before.",created:"2024-01-16 9:30 AM"},{author:"Mike Brown",content:"Great! I'll create a technical design doc for review.",created:"2024-01-16 10:45 AM"},{author:"Sarah Johnson",content:"Technical design approved. Ready to start implementation.",created:"2024-01-16 2:30 PM"},{author:"John Smith",content:"I'll start working on this today.",created:"2024-01-16 2:45 PM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",assignee:"{{issue.assignee}}",reporter:"{{issue.reporter}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",components:"{{issue.components}}",labels:"{{issue.labels}}",sprint:"{{issue.sprint}}",storyPoints:"{{issue.storyPoints}}",comments:"{{issue.comments}}"}},servicedesk:{mock:{issueKey:"HELP-456",summary:"Cannot access email account",type:"IT Support",priority:"Medium",status:"Open",requestType:"Email Access",requester:"Jane Doe",assignee:"IT Support Team",created:"2024-01-15 9:15 AM",updated:"2024-01-15 9:30 AM",description:"I am unable to log into my work email since this morning...",impact:"Single user",sla:"4 hours",comments:[{author:"IT Support Team",content:"Have you tried resetting your password?",created:"2024-01-15 9:30 AM"},{author:"Jane Doe",content:"Yes, I tried that but still getting an error.",created:"2024-01-15 10:15 AM"},{author:"IT Support Team",content:"Can you share a screenshot of the error?",created:"2024-01-15 10:30 AM"},{author:"Jane Doe",content:"Screenshot attached. Error code is AUTH-123.",created:"2024-01-15 10:45 AM"},{author:"IT Support Team",content:"Thanks. This looks like an account lock. I'll unlock it now.",created:"2024-01-15 11:00 AM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",requestType:"{{issue.requestType}}",requester:"{{issue.requester}}",assignee:"{{issue.assignee}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",impact:"{{issue.impact}}",sla:"{{issue.sla}}",comments:"{{issue.comments}}"}},core:{mock:{issueKey:"TASK-789",summary:"Quarterly financial report preparation",type:"Task",priority:"Medium",status:"To Do",assignee:"Finance Team",reporter:"Department Head",created:"2024-01-15 11:00 AM",updated:"2024-01-15 11:00 AM",description:"Prepare Q4 2023 financial report including...",dueDate:"2024-01-31",category:"Finance",comments:[{author:"Department Head",content:"Please include the new revenue streams in this report.",created:"2024-01-15 11:30 AM"},{author:"Finance Team",content:"Will do. Do you want a breakdown by product line?",created:"2024-01-15 1:45 PM"},{author:"Department Head",content:"Yes, please include product line breakdown.",created:"2024-01-15 2:00 PM"},{author:"Finance Team",content:"First draft ready for review.",created:"2024-01-16 9:15 AM"},{author:"Marketing Lead",content:"Can we add a section comparing Q4 performance to previous quarters?",created:"2024-01-16 10:30 AM"},{author:"Finance Team",content:"Good suggestion. I'll add historical comparison charts.",created:"2024-01-16 11:45 AM"},{author:"Department Head",content:"Also include YoY growth metrics for each product line.",created:"2024-01-16 2:15 PM"},{author:"Finance Team",content:"Updated draft with historical comparisons and YoY metrics ready for review.",created:"2024-01-16 4:30 PM"}]},smart:{issueKey:"{{issue.key}}",summary:"{{issue.summary}}",type:"{{issue.type}}",priority:"{{issue.priority}}",status:"{{issue.status.name}}",assignee:"{{issue.assignee}}",reporter:"{{issue.reporter}}",created:"{{issue.created}}",updated:"{{issue.updated}}",description:"{{issue.description}}",dueDate:"{{issue.dueDate}}",category:"{{issue.category}}",comments:"{{issue.comments}}"}}};let n="software",h="full",t=!1,c=!0,f="all",m="#0052CC",u="#E9E9E9",y="https://your-domain.atlassian.net";function k(s){return t?"${jiraBaseUrl}/browse/${issueKey}":`${y}/browse/${s}`}function $(){const s=t?v[n].smart:v[n].mock;let e="";return e+=`
     <div class="field-group">
       <div class="text-sm text-gray-500 font-medium">Status</div>
       <div class="text-sm text-gray-900">${t?"{{issue.status.name}}":s.status}</div>
@@ -23,7 +23,7 @@
       <div class="text-sm text-gray-500 font-medium">Updated</div>
       <div class="text-sm text-gray-900">${t?"{{issue.updated}}":s.updated}</div>
     </div>
-  `,l==="software"?e+=`
+  `,n==="software"?e+=`
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Sprint</div>
         <div class="text-sm text-gray-900">${t?"{{issue.sprint}}":s.sprint}</div>
@@ -32,7 +32,7 @@
         <div class="text-sm text-gray-500 font-medium">Story Points</div>
         <div class="text-sm text-gray-900">${t?"{{issue.storyPoints}}":s.storyPoints}</div>
       </div>
-    `:l==="servicedesk"?e+=`
+    `:n==="servicedesk"?e+=`
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Request Type</div>
         <div class="text-sm text-gray-900">${t?"{{issue.requestType}}":s.requestType}</div>
@@ -45,7 +45,7 @@
         <div class="text-sm text-gray-500 font-medium">SLA</div>
         <div class="text-sm text-gray-900">${t?"{{issue.sla}}":s.sla}</div>
       </div>
-    `:l==="core"&&(e+=`
+    `:n==="core"&&(e+=`
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Due Date</div>
         <div class="text-sm text-gray-900">${t?"{{issue.dueDate}}":s.dueDate}</div>
@@ -54,7 +54,7 @@
         <div class="text-sm text-gray-500 font-medium">Category</div>
         <div class="text-sm text-gray-900">${t?"{{issue.category}}":s.category}</div>
       </div>
-    `),e}function g(){const s=document.getElementById("previewArea"),e=t?v[l].smart:v[l].mock,r=k(f,e,c);s.innerHTML=r}function y(s){if(!Array.isArray(s))return[];console.log("Filtering comments. Mode:",x),console.log("Original comments:",s);const e=[...s].sort((o,a)=>new Date(a.created)-new Date(o.created));let r;switch(x){case"latest":r=e.slice(0,1);break;case"last5":r=e.slice(0,5);break;default:r=e}return console.log("Filtered comments:",r),r}function k(s,e,r){let o="",a=[];return r&&(Array.isArray(e.comments)?a=y(e.comments):t&&(a=["{{comment.body.html}}"])),s==="compact"?(o=`
+    `),e}function g(){const s=document.getElementById("previewArea"),e=t?v[n].smart:v[n].mock,o=L(h,e,c);s.innerHTML=o}function x(s){if(!Array.isArray(s))return[];console.log("Filtering comments. Mode:",f),console.log("Original comments:",s);const e=[...s].sort((r,a)=>new Date(a.created)-new Date(r.created));let o;switch(f){case"latest":o=e.slice(0,1);break;case"last5":o=e.slice(0,5);break;default:o=e}return console.log("Filtered comments:",o),o}function L(s,e,o){let r="",a=[];o&&(Array.isArray(e.comments)?a=x(e.comments):t&&(a=["{{comment.body.html}}"]));const l=t?`${y}/browse/${e.issueKey}`:k(e.issueKey);return s==="compact"?(r=`
       <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div
           class="color-block text-white p-3 font-semibold flex items-center justify-between"
@@ -75,7 +75,9 @@
         <div class="p-4 space-y-3">
           <div class="space-y-1">
             <h1 class="text-lg font-semibold text-gray-900">
-              ${t?"{{issue.summary}}":e.summary}
+              <a href="${l}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${t?"{{issue.summary}}":e.summary}
+              </a>
             </h1>
           </div>
           
@@ -92,12 +94,12 @@
               <span class="text-gray-500">Assignee:</span>
               <span class="text-gray-900 ml-1">${t?"{{issue.assignee}}":e.assignee}</span>
             </div>
-            ${l==="software"?`
+            ${n==="software"?`
               <div>
                 <span class="text-gray-500">Sprint:</span>
                 <span class="text-gray-900 ml-1">${t?"{{issue.sprint}}":e.sprint}</span>
               </div>
-            `:l==="servicedesk"?`
+            `:n==="servicedesk"?`
               <div>
                 <span class="text-gray-500">SLA:</span>
                 <span class="text-gray-900 ml-1">${t?"{{issue.sla}}":e.sla}</span>
@@ -110,7 +112,7 @@
             `}
           </div>
 
-          ${l==="software"?`
+          ${n==="software"?`
             <div class="space-y-1">
               <div class="text-xs text-gray-500">Components</div>
               <div class="flex flex-wrap gap-1">
@@ -130,7 +132,7 @@
           `:""}
         </div>
       </div>
-    `,r&&a.length>0&&(o+=`
+    `,o&&a.length>0&&(r+=`
         <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
           <div
             class="color-block text-gray-700 p-2 font-medium flex items-center justify-between"
@@ -167,7 +169,7 @@
             `).join(""):""}
           </div>
         </div>
-      `)):s==="full"?(o+=`
+      `)):s==="full"?(r+=`
       <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div
           class="color-block text-white p-5 font-semibold flex items-center justify-between"
@@ -187,15 +189,19 @@
         </div>
         <div class="p-6 space-y-4">
           <div class="space-y-2">
-            <h1 class="text-xl font-semibold text-gray-900">${t?"{{issue.summary}}":e.summary}</h1>
+            <h1 class="text-xl font-semibold text-gray-900">
+              <a href="${l}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${t?"{{issue.summary}}":e.summary}
+              </a>
+            </h1>
             <div class="text-sm text-gray-600">${t?"{{issue.description}}":e.description}</div>
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            ${w()}
+            ${$()}
           </div>
 
-          ${l==="software"?`
+          ${n==="software"?`
             <div class="space-y-2">
               <div class="text-sm text-gray-500 font-medium">Components</div>
               <div class="flex flex-wrap gap-2">
@@ -232,7 +238,7 @@
           `:""}
         </div>
       </div>
-    `,r&&e.comments&&(o+=`
+    `,o&&e.comments&&(r+=`
         <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6">
           <div
             class="color-block text-gray-700 p-5 font-medium flex items-center justify-between"
@@ -248,7 +254,7 @@
               oninput="assignHeaderColor('comments', this.value)">
           </div>
           <div class="divide-y divide-gray-100">
-            ${Array.isArray(e.comments)?y(e.comments).map(i=>`
+            ${Array.isArray(e.comments)?x(e.comments).map(i=>`
               <div class="p-6">
                 <div class="flex items-start space-x-3 mb-2">
                   <div class="flex-1">
@@ -267,7 +273,7 @@
             `).join(""):""}
           </div>
         </div>
-      `)):o+=`
+      `)):r+=`
       <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div
           class="color-block text-white p-4 font-semibold flex items-center justify-between"
@@ -292,7 +298,11 @@
         </div>
         <div class="p-4 space-y-3">
           <div class="space-y-1">
-            <h1 class="text-lg font-semibold text-gray-900">${t?"{{issue.summary}}":e.summary}</h1>
+            <h1 class="text-lg font-semibold text-gray-900">
+              <a href="${l}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${t?"{{issue.summary}}":e.summary}
+              </a>
+            </h1>
           </div>
           
           <div class="grid grid-cols-2 gap-3 text-sm">
@@ -306,7 +316,7 @@
             </div>
           </div>
 
-          ${l==="software"&&Array.isArray(e.labels)?`
+          ${n==="software"&&Array.isArray(e.labels)?`
             <div class="flex flex-wrap gap-1">
               ${e.labels.map(i=>`
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -316,7 +326,7 @@
             </div>
           `:""}
 
-          ${r&&e.comments?`
+          ${o&&e.comments?`
             <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
               <div
                 class="color-block p-4 font-medium" style="background-color: ${u};"
@@ -331,7 +341,7 @@
                   oninput="assignHeaderColor('comments', this.value)">
               </div>
               <div class="divide-y divide-gray-100">
-                ${Array.isArray(e.comments)?y(e.comments).map(i=>`
+                ${Array.isArray(e.comments)?x(e.comments).map(i=>`
                   <div class="p-4">
                     <div class="flex items-start space-x-3 mb-2">
                       <div class="flex-1">
@@ -351,7 +361,18 @@
           `:""}
         </div>
       </div>
-    `,o}function $(){const s=v[l].smart,e=()=>{let d="";return d+=`
+    `,r+=`
+    <div class="px-4 pb-4">
+      <a href="${l}" 
+         class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors"
+         target="_blank">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z"/>
+        </svg>
+        View in Jira
+      </a>
+    </div>
+  `,r}function C(){const s=v[n].smart,e=()=>{let d="";return d+=`
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Status</div>
         <div class="text-sm text-gray-900">{{issue.status.name}}</div>
@@ -376,7 +397,7 @@
         <div class="text-sm text-gray-500 font-medium">Updated</div>
         <div class="text-sm text-gray-900">{{issue.updated}}</div>
       </div>
-    `,l==="software"?d+=`
+    `,n==="software"?d+=`
         <div class="field-group">
           <div class="text-sm text-gray-500 font-medium">Sprint</div>
           <div class="text-sm text-gray-900">{{issue.sprint}}</div>
@@ -385,7 +406,7 @@
           <div class="text-sm text-gray-500 font-medium">Story Points</div>
           <div class="text-sm text-gray-900">{{issue.storyPoints}}</div>
         </div>
-      `:l==="servicedesk"?d+=`
+      `:n==="servicedesk"?d+=`
         <div class="field-group">
           <div class="text-sm text-gray-500 font-medium">Request Type</div>
           <div class="text-sm text-gray-900">{{issue.requestType}}</div>
@@ -398,7 +419,7 @@
           <div class="text-sm text-gray-500 font-medium">SLA</div>
           <div class="text-sm text-gray-900">{{issue.sla}}</div>
         </div>
-      `:l==="core"&&(d+=`
+      `:n==="core"&&(d+=`
         <div class="field-group">
           <div class="text-sm text-gray-500 font-medium">Due Date</div>
           <div class="text-sm text-gray-900">{{issue.dueDate}}</div>
@@ -407,7 +428,7 @@
           <div class="text-sm text-gray-500 font-medium">Category</div>
           <div class="text-sm text-gray-900">{{issue.category}}</div>
         </div>
-      `),d};function r(){if(!c)return"";const d=Array.isArray(s.comments)?y(s.comments).map(p=>`
+      `),d};function o(){if(!c)return"";const d=Array.isArray(s.comments)?x(s.comments).map(p=>`
       <div class="p-4">
         <div class="flex items-center justify-between">
           <span class="text-sm font-medium text-gray-900">{{author.displayName}}</span>
@@ -434,7 +455,7 @@
           {{/issue.comments}}
         </div>
       </div>
-    `}function o(){return c?`
+    `}function r(){return c?`
       <div class="mt-6 preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="color-block p-4 font-medium" style="background-color: ${u};">
           Comments
@@ -451,7 +472,7 @@
           {{/issue.comments}}
         </div>
       </div>
-    `:""}`${m}${e()}`,`${r()}`;const n=`<!DOCTYPE html>
+    `:""}`${m}${y}${e()}`,`${o()}`;const i=`<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -532,7 +553,11 @@
     </div>
     <div class="p-6 space-y-4">
       <div class="space-y-2">
-        <h1 class="text-xl font-semibold text-gray-900">{{issue.summary}}</h1>
+        <h1 class="text-xl font-semibold text-gray-900">
+          <a href="${y}/browse/{{issue.key}}" class="hover:text-blue-600 hover:underline" target="_blank">
+            {{issue.summary}}
+          </a>
+        </h1>
         <div class="text-sm text-gray-600">{{issue.description}}</div>
       </div>
       
@@ -540,7 +565,7 @@
         ${e()}
       </div>
 
-      ${l==="software"?`
+      ${n==="software"?`
         <div class="space-y-2">
           <div class="text-sm text-gray-500 font-medium">Components</div>
           <div class="flex flex-wrap gap-2">
@@ -565,11 +590,11 @@
       `:""}
     </div>
   </div>
-  ${o()}
+  ${r()}
 `}
 </body>
-</html>`.replace(/\s+/g," ").replace(/>\s+</g,"><").replace(/<!--.*?-->/g,"").trim();document.getElementById("htmlOutput").textContent=n}document.querySelectorAll("[data-product]").forEach(s=>{s.addEventListener("click",e=>{document.querySelectorAll("[data-product]").forEach(r=>{r.classList.remove("bg-blue-600","text-white","hover:bg-blue-700"),r.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")}),e.target.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),e.target.classList.add("bg-blue-600","text-white","hover:bg-blue-700"),l=e.target.dataset.product,g()})});function L(){t=!t,g(),h()}function C(){c=!c;const s=document.getElementById("commentDisplayOptions");s.style.display=c?"flex":"none",b(),g()}function A(s){x=s,document.querySelectorAll("[data-comment-display]").forEach(e=>{e.dataset.commentDisplay===s?(e.classList.remove("bg-gray-100","text-gray-700"),e.classList.add("bg-blue-600","text-white")):(e.classList.remove("bg-blue-600","text-white"),e.classList.add("bg-gray-100","text-gray-700"))}),g()}function T(){document.querySelectorAll("[data-template]").forEach(s=>{const e=s.dataset.template===f;s.classList.toggle("bg-blue-600",e),s.classList.toggle("text-white",e),s.classList.toggle("bg-gray-100",!e),s.classList.toggle("text-gray-700",!e)})}function h(){const s=document.getElementById("toggleView");s&&(s.textContent=t?"Show Mock Data":"Show Smart Values",s.classList.toggle("bg-blue-600",!t),s.classList.toggle("bg-gray-100",t),s.classList.toggle("text-white",!t),s.classList.toggle("text-gray-700",t))}function b(){const s=document.getElementById("commentsToggle");s&&(s.textContent=c?"Hide Comments":"Show Comments",s.classList.toggle("bg-blue-600",c),s.classList.toggle("text-white",c),s.classList.toggle("bg-gray-100",!c),s.classList.toggle("text-gray-700",!c))}function M(s){const e=s==="issue"?"issueColorPicker":"commentsColorPicker";document.getElementById(e).click()}function P(s,e){s==="issue"?m=e:s==="comments"&&(u=e),g()}document.addEventListener("DOMContentLoaded",()=>{document.querySelector('[data-product="software"]').classList.add("bg-blue-600","text-white","hover:bg-blue-700");const e=document.querySelector('[data-template="full"]');e.classList.add("bg-blue-600","text-white"),e.classList.remove("bg-gray-100","text-gray-700"),g(),h(),T(),b();const r=document.getElementById("generateHTML");r&&r.addEventListener("click",$);const o=document.getElementById("copyHTML");o&&o.addEventListener("click",async()=>{const n=document.getElementById("htmlOutput");if(n&&n.value)try{await navigator.clipboard.writeText(n.value);const d=o.innerHTML;o.innerHTML=`
+</html>`.replace(/\s+/g," ").replace(/>\s+</g,"><").replace(/<!--.*?-->/g,"").trim();document.getElementById("htmlOutput").textContent=i}document.querySelectorAll("[data-product]").forEach(s=>{s.addEventListener("click",e=>{document.querySelectorAll("[data-product]").forEach(o=>{o.classList.remove("bg-blue-600","text-white","hover:bg-blue-700"),o.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")}),e.target.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),e.target.classList.add("bg-blue-600","text-white","hover:bg-blue-700"),n=e.target.dataset.product,g()})});function A(){t=!t,g(),b()}function T(){c=!c;const s=document.getElementById("commentDisplayOptions");s.style.display=c?"flex":"none",w(),g()}function M(s){f=s,document.querySelectorAll("[data-comment-display]").forEach(e=>{e.dataset.commentDisplay===s?(e.classList.remove("bg-gray-100","text-gray-700"),e.classList.add("bg-blue-600","text-white")):(e.classList.remove("bg-blue-600","text-white"),e.classList.add("bg-gray-100","text-gray-700"))}),g()}function P(){document.querySelectorAll("[data-template]").forEach(s=>{const e=s.dataset.template===h;s.classList.toggle("bg-blue-600",e),s.classList.toggle("text-white",e),s.classList.toggle("bg-gray-100",!e),s.classList.toggle("text-gray-700",!e)})}function b(){const s=document.getElementById("toggleView");s&&(s.textContent=t?"Show Mock Data":"Show Smart Values",s.classList.toggle("bg-blue-600",!t),s.classList.toggle("bg-gray-100",t),s.classList.toggle("text-white",!t),s.classList.toggle("text-gray-700",t))}function w(){const s=document.getElementById("commentsToggle");s&&(s.textContent=c?"Hide Comments":"Show Comments",s.classList.toggle("bg-blue-600",c),s.classList.toggle("text-white",c),s.classList.toggle("bg-gray-100",!c),s.classList.toggle("text-gray-700",!c))}function S(s){const e=s==="issue"?"issueColorPicker":"commentsColorPicker";document.getElementById(e).click()}function H(s,e){s==="issue"?m=e:s==="comments"&&(u=e),g()}document.addEventListener("DOMContentLoaded",()=>{document.querySelector('[data-product="software"]').classList.add("bg-blue-600","text-white","hover:bg-blue-700");const e=document.querySelector('[data-template="full"]');e.classList.add("bg-blue-600","text-white"),e.classList.remove("bg-gray-100","text-gray-700"),g(),b(),P(),w();const o=document.getElementById("generateHTML");o&&o.addEventListener("click",C);const r=document.getElementById("copyHTML");r&&r.addEventListener("click",async()=>{const i=document.getElementById("htmlOutput");if(i&&i.value)try{await navigator.clipboard.writeText(i.value);const d=r.innerHTML;r.innerHTML=`
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
-          `,o.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),o.classList.add("bg-green-50","text-green-600"),setTimeout(()=>{o.innerHTML=d,o.classList.remove("bg-green-50","text-green-600"),o.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")},2e3)}catch(d){console.error("Failed to copy text: ",d)}});const a=document.getElementById("toggleView");a&&a.addEventListener("click",L);const i=document.getElementById("commentsToggle");i&&i.addEventListener("click",C),document.querySelectorAll("[data-template]").forEach(n=>{n.addEventListener("click",d=>{document.querySelectorAll("[data-template]").forEach(p=>{p.classList.remove("bg-blue-600","text-white"),p.classList.add("bg-gray-100","text-gray-700")}),d.target.classList.remove("bg-gray-100","text-gray-700"),d.target.classList.add("bg-blue-600","text-white"),f=d.target.dataset.template,g()})}),document.querySelectorAll("[data-product]").forEach(n=>{n.addEventListener("click",d=>{document.querySelectorAll("[data-product]").forEach(p=>{p.classList.remove("bg-blue-600","text-white","hover:bg-blue-700"),p.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")}),d.target.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),d.target.classList.add("bg-blue-600","text-white","hover:bg-blue-700"),l=d.target.dataset.product,g()})}),document.querySelectorAll("[data-comment-display]").forEach(n=>{n.addEventListener("click",d=>{const p=d.target.dataset.commentDisplay;A(p)})})});window.triggerColorPicker=M;window.assignHeaderColor=P;
+          `,r.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),r.classList.add("bg-green-50","text-green-600"),setTimeout(()=>{r.innerHTML=d,r.classList.remove("bg-green-50","text-green-600"),r.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")},2e3)}catch(d){console.error("Failed to copy text: ",d)}});const a=document.getElementById("toggleView");a&&a.addEventListener("click",A);const l=document.getElementById("commentsToggle");l&&l.addEventListener("click",T),document.querySelectorAll("[data-template]").forEach(i=>{i.addEventListener("click",d=>{document.querySelectorAll("[data-template]").forEach(p=>{p.classList.remove("bg-blue-600","text-white"),p.classList.add("bg-gray-100","text-gray-700")}),d.target.classList.remove("bg-gray-100","text-gray-700"),d.target.classList.add("bg-blue-600","text-white"),h=d.target.dataset.template,g()})}),document.querySelectorAll("[data-product]").forEach(i=>{i.addEventListener("click",d=>{document.querySelectorAll("[data-product]").forEach(p=>{p.classList.remove("bg-blue-600","text-white","hover:bg-blue-700"),p.classList.add("bg-gray-100","text-gray-700","hover:bg-gray-200")}),d.target.classList.remove("bg-gray-100","text-gray-700","hover:bg-gray-200"),d.target.classList.add("bg-blue-600","text-white","hover:bg-blue-700"),n=d.target.dataset.product,g()})}),document.getElementById("jiraUrl").addEventListener("input",i=>{y=i.target.value.trim(),g()}),document.querySelectorAll("[data-comment-display]").forEach(i=>{i.addEventListener("click",d=>{const p=d.target.dataset.commentDisplay;M(p)})})});window.triggerColorPicker=S;window.assignHeaderColor=H;
