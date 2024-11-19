@@ -6,8 +6,8 @@
   <title>Jira Email Template Generator</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <script type="module" crossorigin src="/jira-email-template/assets/index-49526861.js"></script>
-  <link rel="stylesheet" href="/jira-email-template/assets/index-030103b7.css">
+  <script type="module" crossorigin src="/jira-email-template/assets/index-89ad3403.js"></script>
+  <link rel="stylesheet" href="/jira-email-template/assets/index-7ce89f39.css">
 </head>
 <body class="bg-gray-50 min-h-screen">
   <div class="container mx-auto px-4 py-8">
@@ -89,23 +89,32 @@
 
             <!-- Comments Toggle -->
             <div id="commentsToggleContainer" class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Comments Display</label>
-              <div class="flex space-x-2">
-                <button
-                  data-comment-display="full"
-                  class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
-                  Full
-                </button>
-                <button
-                  data-comment-display="compact"
-                  class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
-                  Compact
-                </button>
-                <button
-                  data-comment-display="none"
-                  class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
-                  None
-                </button>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Comments</label>
+              <div class="flex flex-col space-y-2">
+                <div class="flex space-x-2">
+                  <button
+                    id="commentsToggle"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Show Comments
+                  </button>
+                </div>
+                <div id="commentDisplayOptions" class="flex space-x-2" style="display: none;">
+                  <button
+                    data-comment-display="all"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
+                    All
+                  </button>
+                  <button
+                    data-comment-display="latest"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Latest
+                  </button>
+                  <button
+                    data-comment-display="last5"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Last 5
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -116,9 +125,11 @@
                 <div class="flex items-center space-x-2">
                   <input
                     type="color"
-                    id="issueHeaderColor"
+                    id="issueColorPicker"
                     value="#0052CC"
-                    class="w-12 h-12 rounded cursor-pointer">
+                    class="w-12 h-12 rounded cursor-pointer"
+                    onchange="assignHeaderColor('issue', this.value)"
+                    oninput="assignHeaderColor('issue', this.value)">
                   <span class="text-sm text-gray-500">Click to change color</span>
                 </div>
               </div>
@@ -127,9 +138,11 @@
                 <div class="flex items-center space-x-2">
                   <input
                     type="color"
-                    id="commentsHeaderColor"
+                    id="commentsColorPicker"
                     value="#f0f0f0"
-                    class="w-12 h-12 rounded cursor-pointer">
+                    class="w-12 h-12 rounded cursor-pointer"
+                    onchange="assignHeaderColor('comments', this.value)"
+                    oninput="assignHeaderColor('comments', this.value)">
                   <span class="text-sm text-gray-500">Click to change color</span>
                 </div>
               </div>
