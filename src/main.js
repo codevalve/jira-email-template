@@ -56,7 +56,7 @@ const templateData = {
       summary: '{{issue.summary}}',
       type: '{{issue.type}}',
       priority: '{{issue.priority}}',
-      status: '{{issue.status}}',
+      status: '{{issue.status.name}}',
       assignee: '{{issue.assignee}}',
       reporter: '{{issue.reporter}}',
       created: '{{issue.created}}',
@@ -117,7 +117,7 @@ const templateData = {
       summary: '{{issue.summary}}',
       type: '{{issue.type}}',
       priority: '{{issue.priority}}',
-      status: '{{issue.status}}',
+      status: '{{issue.status.name}}',
       requestType: '{{issue.requestType}}',
       requester: '{{issue.requester}}',
       assignee: '{{issue.assignee}}',
@@ -191,7 +191,7 @@ const templateData = {
       summary: '{{issue.summary}}',
       type: '{{issue.type}}',
       priority: '{{issue.priority}}',
-      status: '{{issue.status}}',
+      status: '{{issue.status.name}}',
       assignee: '{{issue.assignee}}',
       reporter: '{{issue.reporter}}',
       created: '{{issue.created}}',
@@ -222,7 +222,7 @@ function generateFields() {
   fields += `
     <div class="field-group">
       <div class="text-sm text-gray-500 font-medium">Status</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.status}}' : data.status}</div>
+      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.status.name}}' : data.status}</div>
     </div>
     <div class="field-group">
       <div class="text-sm text-gray-500 font-medium">Priority</div>
@@ -371,7 +371,7 @@ function generateTemplate(templateType, data, showComments) {
           <div class="grid grid-cols-2 gap-3 text-sm">
             <div>
               <span class="text-gray-500">Status:</span>
-              <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.status}}' : data.status}</span>
+              <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.status.name}}' : data.status}</span>
             </div>
             <div>
               <span class="text-gray-500">Priority:</span>
@@ -579,7 +579,7 @@ function generateTemplate(templateType, data, showComments) {
             <div class="flex items-center space-x-2">
               <span class="text-sm opacity-75">${showSmartValues ? '{{issue.type}}' : data.type}</span>
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20">
-                ${showSmartValues ? '{{issue.status}}' : data.status}
+                ${showSmartValues ? '{{issue.status.name}}' : data.status}
               </span>
             </div>
           </div>
@@ -747,7 +747,7 @@ function generateHTML() {
     fields += `
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Status</div>
-        <div class="text-sm text-gray-900">{{issue.status}}</div>
+        <div class="text-sm text-gray-900">{{issue.status.name}}</div>
       </div>
       <div class="field-group">
         <div class="text-sm text-gray-500 font-medium">Priority</div>
