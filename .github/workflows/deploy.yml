@@ -5,10 +5,14 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,8 +29,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Copy dist contents
+        run: |
+          rm -rf gh-pages-branch
+          mkdir gh-pages-branch
+          cp -r dist/* gh-pages-branch/
+          touch gh-pages-branch/.nojekyll
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          folder: gh-pages-branch
+          branch: gh-pages
+          clean: true
