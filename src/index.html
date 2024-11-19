@@ -39,21 +39,21 @@
             <!-- Project Type Selection -->
             <div class="mb-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">Jira Product</label>
-              <div class="flex flex-wrap gap-2">
+              <div class="flex space-x-2" role="group">
                 <button
                   data-product="software"
                   class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
-                  Jira Software
+                  Software
                 </button>
                 <button
                   data-product="servicedesk"
                   class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
-                  Service Desk
+                  Service
                 </button>
                 <button
                   data-product="core"
                   class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
-                  Jira Core
+                  Core
                 </button>
               </div>
             </div>
@@ -76,12 +76,33 @@
 
             <!-- Comments Toggle -->
             <div id="commentsToggleContainer" class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Show Comments</label>
-              <button
-                id="toggleComments"
-                class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
-                Comments
-              </button>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Comments</label>
+              <div class="flex flex-col space-y-2">
+                <div class="flex space-x-2">
+                  <button
+                    id="commentsToggle"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Show Comments
+                  </button>
+                </div>
+                <div id="commentDisplayOptions" class="flex space-x-2" style="display: none;">
+                  <button
+                    data-comment-display="all"
+                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
+                    All
+                  </button>
+                  <button
+                    data-comment-display="latest"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Latest
+                  </button>
+                  <button
+                    data-comment-display="last5"
+                    class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200">
+                    Last 5
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- Color Controls -->

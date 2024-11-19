@@ -23,25 +23,50 @@ const templateData = {
           author: 'Mike Brown',
           content: 'Should we consider adding OAuth support?',
           created: '2024-01-15 3:20 PM'
+        },
+        {
+          author: 'Sarah Johnson',
+          content: 'Yes, OAuth would be great. Let\'s also consider OpenID Connect.',
+          created: '2024-01-15 4:15 PM'
+        },
+        {
+          author: 'John Smith',
+          content: 'I can help with the OAuth implementation. I\'ve done it before.',
+          created: '2024-01-16 9:30 AM'
+        },
+        {
+          author: 'Mike Brown',
+          content: 'Great! I\'ll create a technical design doc for review.',
+          created: '2024-01-16 10:45 AM'
+        },
+        {
+          author: 'Sarah Johnson',
+          content: 'Technical design approved. Ready to start implementation.',
+          created: '2024-01-16 2:30 PM'
+        },
+        {
+          author: 'John Smith',
+          content: 'I\'ll start working on this today.',
+          created: '2024-01-16 2:45 PM'
         }
       ]
     },
     smart: {
-      issueKey: '${issue.key}',
-      summary: '${issue.summary}',
-      type: '${issue.type}',
-      priority: '${issue.priority}',
-      status: '${issue.status}',
-      assignee: '${issue.assignee}',
-      reporter: '${issue.reporter}',
-      created: '${issue.created}',
-      updated: '${issue.updated}',
-      description: '${issue.description}',
-      components: '${issue.components}',
-      labels: '${issue.labels}',
-      sprint: '${issue.sprint}',
-      storyPoints: '${issue.storyPoints}',
-      comments: '${issue.comments}'
+      issueKey: '{{issue.key}}',
+      summary: '{{issue.summary}}',
+      type: '{{issue.type}}',
+      priority: '{{issue.priority}}',
+      status: '{{issue.status}}',
+      assignee: '{{issue.assignee}}',
+      reporter: '{{issue.reporter}}',
+      created: '{{issue.created}}',
+      updated: '{{issue.updated}}',
+      description: '{{issue.description}}',
+      components: '{{issue.components}}',
+      labels: '{{issue.labels}}',
+      sprint: '{{issue.sprint}}',
+      storyPoints: '{{issue.storyPoints}}',
+      comments: '{{issue.comments}}'
     }
   },
   servicedesk: {
@@ -64,24 +89,44 @@ const templateData = {
           author: 'IT Support Team',
           content: 'Have you tried resetting your password?',
           created: '2024-01-15 9:30 AM'
+        },
+        {
+          author: 'Jane Doe',
+          content: 'Yes, I tried that but still getting an error.',
+          created: '2024-01-15 10:15 AM'
+        },
+        {
+          author: 'IT Support Team',
+          content: 'Can you share a screenshot of the error?',
+          created: '2024-01-15 10:30 AM'
+        },
+        {
+          author: 'Jane Doe',
+          content: 'Screenshot attached. Error code is AUTH-123.',
+          created: '2024-01-15 10:45 AM'
+        },
+        {
+          author: 'IT Support Team',
+          content: 'Thanks. This looks like an account lock. I\'ll unlock it now.',
+          created: '2024-01-15 11:00 AM'
         }
       ]
     },
     smart: {
-      issueKey: '${issue.key}',
-      summary: '${issue.summary}',
-      type: '${issue.type}',
-      priority: '${issue.priority}',
-      status: '${issue.status}',
-      requestType: '${issue.requestType}',
-      requester: '${issue.requester}',
-      assignee: '${issue.assignee}',
-      created: '${issue.created}',
-      updated: '${issue.updated}',
-      description: '${issue.description}',
-      impact: '${issue.impact}',
-      sla: '${issue.sla}',
-      comments: '${issue.comments}'
+      issueKey: '{{issue.key}}',
+      summary: '{{issue.summary}}',
+      type: '{{issue.type}}',
+      priority: '{{issue.priority}}',
+      status: '{{issue.status}}',
+      requestType: '{{issue.requestType}}',
+      requester: '{{issue.requester}}',
+      assignee: '{{issue.assignee}}',
+      created: '{{issue.created}}',
+      updated: '{{issue.updated}}',
+      description: '{{issue.description}}',
+      impact: '{{issue.impact}}',
+      sla: '{{issue.sla}}',
+      comments: '{{issue.comments}}'
     }
   },
   core: {
@@ -101,47 +146,124 @@ const templateData = {
       comments: [
         {
           author: 'Department Head',
-          content: 'Please include the new format for expense reporting',
+          content: 'Please include the new revenue streams in this report.',
           created: '2024-01-15 11:30 AM'
+        },
+        {
+          author: 'Finance Team',
+          content: 'Will do. Do you want a breakdown by product line?',
+          created: '2024-01-15 1:45 PM'
+        },
+        {
+          author: 'Department Head',
+          content: 'Yes, please include product line breakdown.',
+          created: '2024-01-15 2:00 PM'
+        },
+        {
+          author: 'Finance Team',
+          content: 'First draft ready for review.',
+          created: '2024-01-16 9:15 AM'
+        },
+        {
+          author: 'Marketing Lead',
+          content: 'Can we add a section comparing Q4 performance to previous quarters?',
+          created: '2024-01-16 10:30 AM'
+        },
+        {
+          author: 'Finance Team',
+          content: 'Good suggestion. I\'ll add historical comparison charts.',
+          created: '2024-01-16 11:45 AM'
+        },
+        {
+          author: 'Department Head',
+          content: 'Also include YoY growth metrics for each product line.',
+          created: '2024-01-16 2:15 PM'
+        },
+        {
+          author: 'Finance Team',
+          content: 'Updated draft with historical comparisons and YoY metrics ready for review.',
+          created: '2024-01-16 4:30 PM'
         }
       ]
     },
     smart: {
-      issueKey: '${issue.key}',
-      summary: '${issue.summary}',
-      type: '${issue.type}',
-      priority: '${issue.priority}',
-      status: '${issue.status}',
-      assignee: '${issue.assignee}',
-      reporter: '${issue.reporter}',
-      created: '${issue.created}',
-      updated: '${issue.updated}',
-      description: '${issue.description}',
-      dueDate: '${issue.dueDate}',
-      category: '${issue.category}',
-      comments: '${issue.comments}'
+      issueKey: '{{issue.key}}',
+      summary: '{{issue.summary}}',
+      type: '{{issue.type}}',
+      priority: '{{issue.priority}}',
+      status: '{{issue.status}}',
+      assignee: '{{issue.assignee}}',
+      reporter: '{{issue.reporter}}',
+      created: '{{issue.created}}',
+      updated: '{{issue.updated}}',
+      description: '{{issue.description}}',
+      dueDate: '{{issue.dueDate}}',
+      category: '{{issue.category}}',
+      comments: '{{issue.comments}}'
     }
   }
 };
 
-// Initialize state
+// Global state
 let currentProduct = 'software';
 let currentTemplate = 'full';
 let showSmartValues = false;
-let showComments = true;
-let issueHeaderColor = "#0052CC";
-let commentsHeaderColor = "#f0f0f0";
+let showComments = false;
+let commentDisplayMode = 'all';
+let issueHeaderColor = '#0052CC';
+let commentsHeaderColor = '#E9EBEE';
 
 // Function to update the template preview
 function updatePreview() {
   const data = showSmartValues ? templateData[currentProduct].smart : templateData[currentProduct].mock;
   const template = generateTemplate(currentTemplate, data, showComments);
-  document.getElementById('previewArea').innerHTML = template;
+  const previewArea = document.getElementById('previewArea');
+  if (previewArea) {
+    previewArea.innerHTML = template;
+  }
+}
+
+// Function to get filtered comments based on display mode
+function getFilteredComments(comments) {
+  if (!Array.isArray(comments)) return [];
+  
+  console.log('Filtering comments. Mode:', commentDisplayMode);
+  console.log('Original comments:', comments);
+  
+  // Sort comments by date, most recent first
+  const sortedComments = [...comments].sort((a, b) => 
+    new Date(b.created) - new Date(a.created)
+  );
+  
+  let result;
+  switch (commentDisplayMode) {
+    case 'latest':
+      result = sortedComments.slice(0, 1);
+      break;
+    case 'last5':
+      result = sortedComments.slice(0, 5);
+      break;
+    default:
+      result = sortedComments;
+  }
+  
+  console.log('Filtered comments:', result);
+  return result;
 }
 
 // Function to generate template
 function generateTemplate(templateType, data, showComments) {
   let template = '';
+  
+  // Ensure comments is an array and filter it
+  let comments = [];
+  if (showComments) {
+    if (Array.isArray(data.comments)) {
+      comments = getFilteredComments(data.comments);
+    } else if (showSmartValues) {
+      comments = ['{{comment.body.html}}'];
+    }
+  }
 
   // Helper function to generate field rows
   const generateFields = () => {
@@ -288,23 +410,39 @@ function generateTemplate(templateType, data, showComments) {
               oninput="assignHeaderColor('comments', this.value)">
           </div>
           <div class="divide-y divide-gray-100">
-            ${Array.isArray(data.comments) ? data.comments.map(comment => `
+            ${Array.isArray(data.comments) ? comments.map(comment => `
               <div class="p-6">
                 <div class="flex items-start space-x-3 mb-2">
                   <div class="flex-1">
                     <div class="flex items-center space-x-2">
-                      <div class="text-sm font-medium text-gray-700">${comment.author}</div>
+                      <div class="text-sm font-medium text-gray-700">${showSmartValues ? '{{comment.author}}' : comment.author}</div>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
-                      <span>Created: ${comment.created}</span>
+                      <span>Created: ${showSmartValues ? '{{comment.created}}' : comment.created}</span>
                     </div>
                   </div>
                 </div>
                 <div class="prose prose-sm max-w-none text-gray-600">
-                  ${comment.content}
+                  ${showSmartValues ? '{{comment.body.html}}' : comment.content}
                 </div>
               </div>
-            `).join('') : ''}
+            `).join('') : showSmartValues ? `
+              <div class="p-6">
+                <div class="flex items-start space-x-3 mb-2">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-2">
+                      <div class="text-sm font-medium text-gray-700">{{comment.author}}</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                      <span>Created: {{comment.created}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="prose prose-sm max-w-none text-gray-600">
+                  {{comment.body.html}}
+                </div>
+              </div>
+            ` : ''}
           </div>
         </div>
       `;
@@ -358,6 +496,59 @@ function generateTemplate(templateType, data, showComments) {
               `).join('')}
             </div>
           ` : ''}
+
+          ${showComments && data.comments ? `
+            <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
+              <div
+                class="color-block text-gray-700 p-4 font-semibold flex items-center justify-between"
+                style="background-color: ${commentsHeaderColor};"
+                onclick="triggerColorPicker('comments')">
+                <span>Comments</span>
+                <input
+                  type="color"
+                  id="commentsColorPicker"
+                  class="hidden-color-picker"
+                  value="${commentsHeaderColor}"
+                  onchange="assignHeaderColor('comments', this.value)"
+                  oninput="assignHeaderColor('comments', this.value)">
+              </div>
+              <div class="divide-y divide-gray-100">
+                ${Array.isArray(data.comments) ? comments.map(comment => `
+                  <div class="p-4">
+                    <div class="flex items-start space-x-3 mb-2">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                          <div class="text-sm font-medium text-gray-700">${showSmartValues ? '{{comment.author}}' : comment.author}</div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                          <span>Created: ${showSmartValues ? '{{comment.created}}' : comment.created}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="prose prose-sm max-w-none text-gray-600">
+                      ${showSmartValues ? '{{comment.body.html}}' : comment.content}
+                    </div>
+                  </div>
+                `).join('') : showSmartValues ? `
+                  <div class="p-4">
+                    <div class="flex items-start space-x-3 mb-2">
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2">
+                          <div class="text-sm font-medium text-gray-700">{{comment.author}}</div>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                          <span>Created: {{comment.created}}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="prose prose-sm max-w-none text-gray-600">
+                      {{comment.body.html}}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          ` : ''}
         </div>
       </div>
     `;
@@ -366,16 +557,23 @@ function generateTemplate(templateType, data, showComments) {
   return template;
 }
 
+// Function to change template type
+function changeTemplate(template) {
+  currentTemplate = template;
+  updatePreview();
+  updateTemplateButtons();
+}
+
 // Event listeners for product type buttons
 document.querySelectorAll('[data-product]').forEach(button => {
   button.addEventListener('click', (e) => {
     // Update active state
     document.querySelectorAll('[data-product]').forEach(btn => {
-      btn.classList.remove('bg-blue-600', 'text-white');
-      btn.classList.add('bg-gray-100', 'text-gray-700');
+      btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+      btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
     });
-    e.target.classList.remove('bg-gray-100', 'text-gray-700');
-    e.target.classList.add('bg-blue-600', 'text-white');
+    e.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+    e.target.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
     
     // Update current product and refresh preview
     currentProduct = e.target.dataset.product;
@@ -393,18 +591,29 @@ function toggleSmartValues() {
 // Function to toggle comments visibility
 function toggleComments() {
   showComments = !showComments;
-  updatePreview();
+  const commentDisplayOptions = document.getElementById('commentDisplayOptions');
+  commentDisplayOptions.style.display = showComments ? 'flex' : 'none';
   updateCommentsToggle();
+  updatePreview();
 }
 
-// Function to change template type
-function changeTemplate(template) {
-  currentTemplate = template;
-  // Hide comments toggle for compact view
-  document.getElementById('commentsToggleContainer').style.display = 
-    template === 'full' ? 'block' : 'none';
+// Function to handle comment display mode change
+function changeCommentDisplay(mode) {
+  commentDisplayMode = mode;
+  
+  // Update button states
+  document.querySelectorAll('[data-comment-display]').forEach(button => {
+    if (button.dataset.commentDisplay === mode) {
+      button.classList.remove('bg-gray-100', 'text-gray-700');
+      button.classList.add('bg-blue-600', 'text-white');
+    } else {
+      button.classList.remove('bg-blue-600', 'text-white');
+      button.classList.add('bg-gray-100', 'text-gray-700');
+    }
+  });
+  
+  // Update the preview with new comment display mode
   updatePreview();
-  updateTemplateButtons();
 }
 
 // Function to update the template selection buttons
@@ -421,19 +630,24 @@ function updateTemplateButtons() {
 // Function to update the toggle button text
 function updateToggleButton() {
   const toggleButton = document.getElementById('toggleView');
-  toggleButton.textContent = showSmartValues ? 'Show Sample Data' : 'Show Smart Values';
-  toggleButton.classList.toggle('bg-purple-600', showSmartValues);
-  toggleButton.classList.toggle('bg-blue-600', !showSmartValues);
+  if (toggleButton) {
+    toggleButton.textContent = showSmartValues ? 'Show Mock Data' : 'Show Smart Values';
+    toggleButton.classList.toggle('bg-blue-600', !showSmartValues);
+    toggleButton.classList.toggle('bg-gray-100', showSmartValues);
+    toggleButton.classList.toggle('text-white', !showSmartValues);
+    toggleButton.classList.toggle('text-gray-700', showSmartValues);
+  }
 }
 
 // Function to update the comments toggle button
 function updateCommentsToggle() {
-  const toggleButton = document.getElementById('toggleComments');
-  if (toggleButton) {
-    toggleButton.classList.toggle('bg-blue-600', showComments);
-    toggleButton.classList.toggle('bg-gray-100', !showComments);
-    toggleButton.classList.toggle('text-white', showComments);
-    toggleButton.classList.toggle('text-gray-700', !showComments);
+  const button = document.getElementById('commentsToggle');
+  if (button) {
+    button.textContent = showComments ? 'Hide Comments' : 'Show Comments';
+    button.classList.toggle('bg-blue-600', showComments);
+    button.classList.toggle('text-white', showComments);
+    button.classList.toggle('bg-gray-100', !showComments);
+    button.classList.toggle('text-gray-700', !showComments);
   }
 }
 
@@ -472,22 +686,35 @@ function generateHTML() {
 // Initialize the page
 document.addEventListener("DOMContentLoaded", () => {
   // Set initial active states for buttons
-  document.querySelector('[data-product="software"]')?.classList.add('bg-blue-600', 'text-white');
-  document.querySelector('[data-product="software"]')?.classList.remove('bg-gray-100', 'text-gray-700');
+  const defaultProductBtn = document.querySelector('[data-product="software"]');
+  defaultProductBtn.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
   
-  document.querySelector('[data-template="full"]')?.classList.add('bg-blue-600', 'text-white');
-  document.querySelector('[data-template="full"]')?.classList.remove('bg-gray-100', 'text-gray-700');
+  // Set initial template button state
+  const defaultTemplateBtn = document.querySelector('[data-template="full"]');
+  defaultTemplateBtn.classList.add('bg-blue-600', 'text-white');
+  defaultTemplateBtn.classList.remove('bg-gray-100', 'text-gray-700');
   
-  // Initialize UI
+  // Initialize UI state
   updatePreview();
   updateToggleButton();
   updateTemplateButtons();
   updateCommentsToggle();
   
   // Set up event listeners
-  document.getElementById("generateHTML")?.addEventListener("click", generateHTML);
-  document.getElementById("toggleView")?.addEventListener("click", toggleSmartValues);
-  document.getElementById("toggleComments")?.addEventListener("click", toggleComments);
+  const generateHtmlBtn = document.getElementById("generateHTML");
+  if (generateHtmlBtn) {
+    generateHtmlBtn.addEventListener("click", generateHTML);
+  }
+
+  const smartValuesToggle = document.getElementById("toggleView");
+  if (smartValuesToggle) {
+    smartValuesToggle.addEventListener("click", toggleSmartValues);
+  }
+
+  const commentsToggle = document.getElementById("commentsToggle");
+  if (commentsToggle) {
+    commentsToggle.addEventListener("click", toggleComments);
+  }
   
   // Template style buttons
   document.querySelectorAll('[data-template]').forEach(button => {
@@ -498,7 +725,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       e.target.classList.remove('bg-gray-100', 'text-gray-700');
       e.target.classList.add('bg-blue-600', 'text-white');
-      changeTemplate(e.target.dataset.template);
+      currentTemplate = e.target.dataset.template;
+      updatePreview();
     });
   });
   
@@ -506,13 +734,21 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('[data-product]').forEach(button => {
     button.addEventListener('click', (e) => {
       document.querySelectorAll('[data-product]').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-gray-100', 'text-gray-700');
+        btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+        btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
       });
-      e.target.classList.remove('bg-gray-100', 'text-gray-700');
-      e.target.classList.add('bg-blue-600', 'text-white');
+      e.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+      e.target.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
       currentProduct = e.target.dataset.product;
       updatePreview();
+    });
+  });
+  
+  // Comment display options
+  document.querySelectorAll('[data-comment-display]').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const mode = e.target.dataset.commentDisplay;
+      changeCommentDisplay(mode);
     });
   });
 });
