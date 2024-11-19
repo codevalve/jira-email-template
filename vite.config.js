@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   root: 'src',
+  base: '/jira-email-template/',
   publicDir: '../public',
   build: {
     outDir: '../dist',
