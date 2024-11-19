@@ -567,7 +567,7 @@ function generateTemplate(templateType, data, showComments) {
                 <div class="flex items-start space-x-3 mb-2">
                   <div class="flex-1">
                     <div class="flex items-center space-x-2">
-                      <div class="text-sm font-medium text-gray-700">${comment.author}</div>
+                      <div class="text-sm font-medium text-gray-900">${comment.author}</div>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
                       <span>Created: ${comment.created}</span>
@@ -693,403 +693,133 @@ function generateTemplate(templateType, data, showComments) {
 
 // Function to generate email template HTML
 function generateEmailTemplate(templateType, data, showComments) {
+  let template = '';
+  
+  // Ensure comments is an array and filter it
+  let comments = [];
+  if (showComments) {
+    if (Array.isArray(data.comments)) {
+      comments = getFilteredComments(data.comments);
+    } else if (showSmartValues) {
+      comments = ['{{comment.body.html}}'];
+    }
+  }
+
   const issueTemplate = `
-    <div style="border: 1px solid #ccc; border-radius: 8px; max-width: 600px; margin: 0 auto; background: linear-gradient(white, #f5f5f5); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <div style="background-color: ${issueHeaderColor}; color: white; padding: 15px 20px; border-radius: 8px 8px 0 0; font-size: 18px; font-weight: bold;">
-        ${data.summary}
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="text-white p-5 font-semibold" style="background-color: ${issueHeaderColor};">
+        <div class="flex items-center space-x-3">
+          <span class="text-lg">${data.issueKey}</span>
+          <span class="text-sm opacity-75">${data.type}</span>
+        </div>
+        <h1 class="text-xl mt-2">
+          <a href="${jiraBaseUrl}/browse/${data.issueKey}" class="hover:underline" target="_blank">
+            ${data.summary}
+          </a>
+        </h1>
       </div>
-      <div style="padding: 20px;">
+      <div class="p-6 space-y-4">
         ${templateType === 'full' ? `
-          <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-            <strong>Description:</strong> <span>${data.description}</span>
+          <div class="space-y-2">
+            <div class="text-sm text-gray-600">${data.description}</div>
           </div>
         ` : ''}
-        <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-          <strong>Key:</strong> <span>${data.issueKey}</span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${generateFields()}
         </div>
-        <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-          <strong>Status:</strong> <span>${data.status}</span>
-        </div>
-        <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-          <strong>Priority:</strong> <span>${data.priority}</span>
-        </div>
-        <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-          <strong>Assignee:</strong> <span>${data.assignee}</span>
-        </div>
-        ${templateType === 'full' ? `
-          <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-            <strong>Reporter:</strong> <span>${data.reporter}</span>
-          </div>
-          <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-            <strong>Created:</strong> <span>${data.created}</span>
-          </div>
-          <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-            <strong>Updated:</strong> <span>${data.updated}</span>
-          </div>
-          ${data.components && data.components.length > 0 ? `
-            <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-              <strong>Components:</strong> <span>${Array.isArray(data.components) ? data.components.join(', ') : data.components}</span>
+
+        ${currentProduct === 'software' ? `
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500 font-medium">Components</div>
+            <div class="flex flex-wrap gap-2">
+              ${Array.isArray(data.components) ? data.components.map(comp => `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  ${comp}
+                </span>
+              `).join('') : ''}
             </div>
-          ` : ''}
-          ${data.labels && data.labels.length > 0 ? `
-            <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-              <strong>Labels:</strong> <span>${Array.isArray(data.labels) ? data.labels.join(', ') : data.labels}</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500 font-medium">Labels</div>
+            <div class="flex flex-wrap gap-2">
+              ${Array.isArray(data.labels) ? data.labels.map(label => `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                  ${label}
+                </span>
+              `).join('') : ''}
             </div>
-          ` : ''}
+          </div>
         ` : ''}
       </div>
     </div>
   `;
 
   const commentsTemplate = showComments && data.comments && data.comments.length > 0 ? `
-    <div style="max-width: 600px; margin: 20px auto 0; background: linear-gradient(white, #f5f5f5); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <div style="background-color: ${commentsHeaderColor}; color: #333; padding: 10px 20px; margin: 0; border-radius: 8px 8px 0 0; font-size: 16px; font-weight: bold;">
+    <div class="mt-6 max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 font-medium" style="background-color: ${commentsHeaderColor};">
         Comments
       </div>
-      <div style="padding: 20px;">
+      <div class="divide-y divide-gray-100">
         ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map(comment => `
-          <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 10px;">
-            <div><strong style="font-weight: 600;">Author:</strong> <span>${comment.author}</span></div>
-            <div><strong style="font-weight: 600;">Comment:</strong></div>
-            <div style="margin-top: 5px;">${comment.content}</div>
-            <div><small><strong style="font-weight: 600;">Posted:</strong> <span>${comment.created}</span></small></div>
+          <div class="p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-900">${comment.author}</span>
+              <span class="text-sm text-gray-500">${comment.created}</span>
+            </div>
+            <div class="mt-1 text-sm text-gray-600">${comment.content}</div>
           </div>
         `).join('') : ''}
       </div>
     </div>
   ` : '';
 
-  const signature = `
-    <div style="margin-top: 20px;">Thank you,</div>
-    <div><span>Your Jira Automation</span></div>
+  const viewInJiraButton = `
+    <div class="mt-6 max-w-2xl mx-auto">
+      <a href="${jiraBaseUrl}/browse/${data.issueKey}" 
+         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+         target="_blank">
+        View in Jira
+      </a>
+    </div>
   `;
 
-  return `<!DOCTYPE html><html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">${issueTemplate}${commentsTemplate}${signature}</body></html>`;
-}
-
-// Function to generate minified HTML
-function generateHTML() {
-  // Always use smart values for the minified output
-  const data = templateData[currentProduct].smart;
-  
-  // Generate fields based on product type
-  const generateFields = () => {
-    let fields = '';
-
-    // Common fields
-    fields += `
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Status</div>
-        <div class="text-sm text-gray-900">{{issue.status.name}}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Priority</div>
-        <div class="text-sm text-gray-900">{{issue.priority}}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Assignee</div>
-        <div class="text-sm text-gray-900">{{issue.assignee}}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Reporter</div>
-        <div class="text-sm text-gray-900">{{issue.reporter}}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Created</div>
-        <div class="text-sm text-gray-900">{{issue.created}}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Updated</div>
-        <div class="text-sm text-gray-900">{{issue.updated}}</div>
-      </div>
-    `;
-
-    // Product specific fields
-    if (currentProduct === 'software') {
-      fields += `
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Sprint</div>
-          <div class="text-sm text-gray-900">{{issue.sprint}}</div>
-        </div>
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Story Points</div>
-          <div class="text-sm text-gray-900">{{issue.storyPoints}}</div>
-        </div>
-      `;
-    } else if (currentProduct === 'servicedesk') {
-      fields += `
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Request Type</div>
-          <div class="text-sm text-gray-900">{{issue.requestType}}</div>
-        </div>
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Impact</div>
-          <div class="text-sm text-gray-900">{{issue.impact}}</div>
-        </div>
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">SLA</div>
-          <div class="text-sm text-gray-900">{{issue.sla}}</div>
-        </div>
-      `;
-    } else if (currentProduct === 'core') {
-      fields += `
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Due Date</div>
-          <div class="text-sm text-gray-900">{{issue.dueDate}}</div>
-        </div>
-        <div class="field-group">
-          <div class="text-sm text-gray-500 font-medium">Category</div>
-          <div class="text-sm text-gray-900">{{issue.category}}</div>
-        </div>
-      `;
-    }
-
-    return fields;
-  };
-
-  // Function to generate the comments section for preview
-  function generatePreviewComments() {
-    if (!showComments) return '';
-    
-    const commentContent = Array.isArray(data.comments) ? getFilteredComments(data.comments).map(comment => `
-      <div class="p-4">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-900">{{author.displayName}}</span>
-          <span class="text-sm text-gray-500">{{created.format("yyyy-MM-dd HH:mm")}}</span>
-        </div>
-        <div class="mt-1 text-sm text-gray-600">{{body.html}}</div>
-      </div>
-    `).join('') : (showSmartValues ? `
-      <div class="p-4">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-900">{{author.displayName}}</span>
-          <span class="text-sm text-gray-500">{{created.format("yyyy-MM-dd HH:mm")}}</span>
-        </div>
-        <div class="mt-1 text-sm text-gray-600">{{body.html}}</div>
-      </div>
-    ` : '');
-    
-    return `
-      <div class="mt-6 preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="color-block p-4 font-medium" style="background-color: ${commentsHeaderColor};">
-          Comments
-        </div>
-        <div class="divide-y divide-gray-100">
-          {{#issue.comments}}
-            ${commentContent}
-          {{/issue.comments}}
-        </div>
-      </div>
-    `;
-  }
-
-  // Function to generate the comments section for minified output
-  function generateMinifiedComments() {
-    if (!showComments) return '';
-    
-    return `
-      <div class="mt-6 preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="color-block p-4 font-medium" style="background-color: ${commentsHeaderColor};">
-          Comments
-        </div>
-        <div class="divide-y divide-gray-100">
-          {{#issue.comments}}
-            <div class="p-4">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-900">{{author.displayName}}</span>
-                <span class="text-sm text-gray-500">{{created.format("yyyy-MM-dd HH:mm")}}</span>
-              </div>
-              <div class="mt-1 text-sm text-gray-600">{{body.html}}</div>
-            </div>
-          {{/issue.comments}}
-        </div>
-      </div>
-    `;
-  }
-
-  const template = `<div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="color-block text-white p-5 font-semibold" style="background-color: ${issueHeaderColor};">
-      <div class="flex items-center space-x-3">
-        <span class="text-lg">{{issue.key}}</span>
-        <span class="text-sm opacity-75">{{issue.type}}</span>
-      </div>
-    </div>
-    <div class="p-6 space-y-4">
-      <div class="space-y-2">
-        <h1 class="text-xl font-semibold text-gray-900">
-          <a href="${jiraBaseUrl}/browse/{{issue.key}}" class="hover:text-blue-600 hover:underline" target="_blank">
-            {{issue.summary}}
-          </a>
-        </h1>
-        <div class="text-sm text-gray-600">{{issue.description}}</div>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${generateFields()}
-      </div>
-
-      ${currentProduct === 'software' ? `
-        <div class="space-y-2">
-          <div class="text-sm text-gray-500 font-medium">Components</div>
-          <div class="flex flex-wrap gap-2">
-            {{#issue.components}}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                {{.}}
-              </span>
-            {{/issue.components}}
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-sm text-gray-500 font-medium">Labels</div>
-          <div class="flex flex-wrap gap-2">
-            {{#issue.labels}}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                {{.}}
-              </span>
-            {{/issue.labels}}
-          </div>
-        </div>
-      ` : ''}
-    </div>
-  </div>
-  ${generatePreviewComments()}
-`;
-
-  const minifiedTemplate = `<div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="color-block text-white p-5 font-semibold" style="background-color: ${issueHeaderColor};">
-      <div class="flex items-center space-x-3">
-        <span class="text-lg">{{issue.key}}</span>
-        <span class="text-sm opacity-75">{{issue.type}}</span>
-      </div>
-    </div>
-    <div class="p-6 space-y-4">
-      <div class="space-y-2">
-        <h1 class="text-xl font-semibold text-gray-900">
-          <a href="${jiraBaseUrl}/browse/{{issue.key}}" class="hover:text-blue-600 hover:underline" target="_blank">
-            {{issue.summary}}
-          </a>
-        </h1>
-        <div class="text-sm text-gray-600">{{issue.description}}</div>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${generateFields()}
-      </div>
-
-      ${currentProduct === 'software' ? `
-        <div class="space-y-2">
-          <div class="text-sm text-gray-500 font-medium">Components</div>
-          <div class="flex flex-wrap gap-2">
-            {{#issue.components}}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                {{.}}
-              </span>
-            {{/issue.components}}
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-sm text-gray-500 font-medium">Labels</div>
-          <div class="flex flex-wrap gap-2">
-            {{#issue.labels}}
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                {{.}}
-              </span>
-            {{/issue.labels}}
-          </div>
-        </div>
-      ` : ''}
-    </div>
-  </div>
-  ${generateMinifiedComments()}
-`;
-
-  const fullHTML = `<!DOCTYPE html>
-<html lang="en">
+  return `<!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>Jira Notification</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Email-specific resets and utilities */
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.5;
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
-    .preview-card {
-      background-color: white;
-      border-radius: 0.75rem;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      border: 1px solid #f3f4f6;
-      overflow: hidden;
-      max-width: 600px;
-      margin: 20px auto;
-    }
-    .color-block {
-      padding: 1.25rem;
-      font-weight: 600;
-    }
-    .field-group {
-      margin-bottom: 1rem;
-    }
-    .text-sm { font-size: 0.875rem; }
-    .text-lg { font-size: 1.125rem; }
-    .text-xl { font-size: 1.25rem; }
-    .font-medium { font-weight: 500; }
-    .font-semibold { font-weight: 600; }
-    .text-gray-500 { color: #6b7280; }
-    .text-gray-600 { color: #4b5563; }
-    .text-gray-900 { color: #111827; }
-    .space-y-2 > * + * { margin-top: 0.5rem; }
-    .space-y-4 > * + * { margin-top: 1rem; }
-    .grid { display: grid; }
-    .gap-4 { gap: 1rem; }
-    .p-4 { padding: 1rem; }
-    .p-6 { padding: 1.5rem; }
-    .mt-6 { margin-top: 1.5rem; }
-    .divide-y > * + * { border-top: 1px solid #f3f4f6; }
-    
-    /* Responsive grid */
-    @media (min-width: 768px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    
-    /* Component and label tags */
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      background-color: #f3f4f6;
-      color: #1f2937;
-      margin: 0.25rem;
-    }
-  </style>
 </head>
-<body style="background-color: #f9fafb; padding: 20px;">
-  ${minifiedTemplate}
+<body class="bg-gray-50 p-4">
+  ${issueTemplate}
+  ${commentsTemplate}
+  ${viewInJiraButton}
 </body>
 </html>`;
+}
 
-  // Get the minified HTML
-  const minifiedHTML = fullHTML
-    .replace(/\s+/g, ' ')  // Replace multiple whitespace with single space
-    .replace(/>\s+</g, '><')  // Remove whitespace between tags
-    .replace(/<!--.*?-->/g, '')  // Remove comments
-    .trim();  // Remove leading/trailing whitespace
-
+// Function to generate HTML for copying
+function generateHTML() {
+  // Always use smart values for the minified output
+  const previousSmartValue = showSmartValues;
+  showSmartValues = true;
+  
+  // Generate the template with current settings
+  const template = generateEmailTemplate('full', templateData[currentProduct].smart, showComments);
+  
+  // Reset smart values to previous state
+  showSmartValues = previousSmartValue;
+  
+  // Minify the HTML by removing unnecessary whitespace and line breaks
+  const minifiedTemplate = template
+    .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
+    .replace(/>\s+</g, '><') // Remove spaces between tags
+    .replace(/\n/g, '') // Remove line breaks
+    .trim(); // Remove leading/trailing whitespace
+  
   // Update the output
-  document.getElementById("htmlOutput").textContent = minifiedHTML;
+  document.getElementById("htmlOutput").value = minifiedTemplate;
 }
 
 // Function to change template type
