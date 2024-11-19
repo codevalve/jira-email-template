@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jira Email Template Designer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 font-sans leading-normal tracking-normal min-h-screen">
+  <nav class="bg-white shadow-sm">
+    <div class="container mx-auto px-6 py-4">
+      <h1 class="text-2xl font-bold text-gray-800">Jira Email Template Designer</h1>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Controls Panel -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">Template Controls</h2>
+          <div class="space-y-4">
+            <button id="generateHTML" class="w-full bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+              </svg>
+              <span>Generate HTML</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="lg:col-span-2 space-y-6">
+        <div id="previewArea" class="space-y-6"></div>
+        
+        <!-- HTML Output -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">Generated HTML</h2>
+          </div>
+          <div id="htmlOutput" class="bg-gray-50 p-4 rounded-lg font-mono text-sm text-gray-600 whitespace-pre-wrap border border-gray-200"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
