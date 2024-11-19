@@ -208,10 +208,18 @@ const templateData = {
 let currentProduct = 'software';
 let currentTemplate = 'full';
 let showSmartValues = false;
-let showComments = false;
+let showComments = true;
 let commentDisplayMode = 'all';
-let issueHeaderColor = '#0052CC';
-let commentsHeaderColor = '#E9EBEE';
+let issueHeaderColor = '#0052CC';  // Jira Blue
+let commentsHeaderColor = '#E9E9E9';
+let jiraBaseUrl = 'https://your-domain.atlassian.net';  // Default Jira URL
+
+// Function to get Jira issue URL
+function getJiraIssueUrl(issueKey) {
+  return showSmartValues 
+    ? `\${jiraBaseUrl}/browse/\${issueKey}`
+    : `${jiraBaseUrl}/browse/${issueKey}`;
+}
 
 // Function to generate fields based on product type
 function generateFields() {
@@ -342,6 +350,8 @@ function generateTemplate(templateType, data, showComments) {
     }
   }
 
+  const issueUrl = showSmartValues ? `${jiraBaseUrl}/browse/${data.issueKey}` : getJiraIssueUrl(data.issueKey);
+
   if (templateType === 'compact') {
     template = `
       <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -364,7 +374,9 @@ function generateTemplate(templateType, data, showComments) {
         <div class="p-4 space-y-3">
           <div class="space-y-1">
             <h1 class="text-lg font-semibold text-gray-900">
-              ${showSmartValues ? '{{issue.summary}}' : data.summary}
+              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${showSmartValues ? '{{issue.summary}}' : data.summary}
+              </a>
             </h1>
           </div>
           
@@ -482,7 +494,11 @@ function generateTemplate(templateType, data, showComments) {
         </div>
         <div class="p-6 space-y-4">
           <div class="space-y-2">
-            <h1 class="text-xl font-semibold text-gray-900">${showSmartValues ? '{{issue.summary}}' : data.summary}</h1>
+            <h1 class="text-xl font-semibold text-gray-900">
+              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${showSmartValues ? '{{issue.summary}}' : data.summary}
+              </a>
+            </h1>
             <div class="text-sm text-gray-600">${showSmartValues ? '{{issue.description}}' : data.description}</div>
           </div>
           
@@ -593,7 +609,11 @@ function generateTemplate(templateType, data, showComments) {
         </div>
         <div class="p-4 space-y-3">
           <div class="space-y-1">
-            <h1 class="text-lg font-semibold text-gray-900">${showSmartValues ? '{{issue.summary}}' : data.summary}</h1>
+            <h1 class="text-lg font-semibold text-gray-900">
+              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
+                ${showSmartValues ? '{{issue.summary}}' : data.summary}
+              </a>
+            </h1>
           </div>
           
           <div class="grid grid-cols-2 gap-3 text-sm">
@@ -654,6 +674,19 @@ function generateTemplate(templateType, data, showComments) {
       </div>
     `;
   }
+
+  template += `
+    <div class="px-4 pb-4">
+      <a href="${issueUrl}" 
+         class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors"
+         target="_blank">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z"/>
+        </svg>
+        View in Jira
+      </a>
+    </div>
+  `;
 
   return template;
 }
@@ -883,7 +916,11 @@ function generateHTML() {
     </div>
     <div class="p-6 space-y-4">
       <div class="space-y-2">
-        <h1 class="text-xl font-semibold text-gray-900">{{issue.summary}}</h1>
+        <h1 class="text-xl font-semibold text-gray-900">
+          <a href="${jiraBaseUrl}/browse/{{issue.key}}" class="hover:text-blue-600 hover:underline" target="_blank">
+            {{issue.summary}}
+          </a>
+        </h1>
         <div class="text-sm text-gray-600">{{issue.description}}</div>
       </div>
       
@@ -928,7 +965,11 @@ function generateHTML() {
     </div>
     <div class="p-6 space-y-4">
       <div class="space-y-2">
-        <h1 class="text-xl font-semibold text-gray-900">{{issue.summary}}</h1>
+        <h1 class="text-xl font-semibold text-gray-900">
+          <a href="${jiraBaseUrl}/browse/{{issue.key}}" class="hover:text-blue-600 hover:underline" target="_blank">
+            {{issue.summary}}
+          </a>
+        </h1>
         <div class="text-sm text-gray-600">{{issue.description}}</div>
       </div>
       
@@ -1252,6 +1293,12 @@ document.addEventListener("DOMContentLoaded", () => {
       currentProduct = e.target.dataset.product;
       updatePreview();
     });
+  });
+
+  // Event listener for Jira URL input
+  document.getElementById('jiraUrl').addEventListener('input', (e) => {
+    jiraBaseUrl = e.target.value.trim();
+    updatePreview();
   });
   
   // Comment display options
