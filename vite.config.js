@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   root: 'src',
@@ -6,13 +7,14 @@ export default defineConfig({
   publicDir: '../public',
   build: {
     outDir: '../dist',
-    emptyOutDir: true
+    emptyOutDir: true,
   },
   server: {
-    port: 3000,
+    port: 5173,
     open: true,
     hmr: {
-      overlay: true
-    }
-  }
-})
+      overlay: true,
+    },
+  },
+  plugins: [tailwindcss()],
+});
