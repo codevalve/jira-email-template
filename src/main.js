@@ -691,10 +691,71 @@ function generateTemplate(templateType, data, showComments) {
   return template;
 }
 
+// Function to generate email fields with inline styles
+function generateEmailFields(data, showSmartValues) {
+  const labelStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #6b7280; font-weight: 500; margin: 0 0 4px 0;';
+  const valueStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #111827; line-height: 20px; margin: 0;';
+  
+  // Define fields based on product
+  const commonFields = [
+    { label: 'Status', value: showSmartValues ? '{{issue.status.name}}' : data.status },
+    { label: 'Priority', value: showSmartValues ? '{{issue.priority}}' : data.priority },
+    { label: 'Assignee', value: showSmartValues ? '{{issue.assignee}}' : data.assignee },
+    { label: 'Reporter', value: showSmartValues ? '{{issue.reporter}}' : data.reporter },
+    { label: 'Created', value: showSmartValues ? '{{issue.created}}' : data.created },
+    { label: 'Updated', value: showSmartValues ? '{{issue.updated}}' : data.updated }
+  ];
+
+  let productFields = [];
+  if (currentProduct === 'software') {
+    productFields = [
+      { label: 'Sprint', value: showSmartValues ? '{{issue.sprint}}' : data.sprint },
+      { label: 'Story Points', value: showSmartValues ? '{{issue.storyPoints}}' : data.storyPoints }
+    ];
+  } else if (currentProduct === 'servicedesk') {
+    productFields = [
+      { label: 'Request Type', value: showSmartValues ? '{{issue.requestType}}' : data.requestType },
+      { label: 'Impact', value: showSmartValues ? '{{issue.impact}}' : data.impact },
+      { label: 'SLA', value: showSmartValues ? '{{issue.sla}}' : data.sla }
+    ];
+  } else if (currentProduct === 'core') {
+    productFields = [
+      { label: 'Due Date', value: showSmartValues ? '{{issue.dueDate}}' : data.dueDate },
+      { label: 'Category', value: showSmartValues ? '{{issue.category}}' : data.category }
+    ];
+  }
+
+  const allFields = [...commonFields, ...productFields];
+  let html = '<table width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 16px;">';
+  
+  for (let i = 0; i < allFields.length; i += 2) {
+    html += '<tr>';
+    // First column
+    html += `
+      <td width="50%" style="padding-bottom: 16px; vertical-align: top; padding-right: 8px;">
+        <div style="${labelStyle}">${allFields[i].label}</div>
+        <div style="${valueStyle}">${allFields[i].value}</div>
+      </td>`;
+    
+    // Second column (if exists)
+    if (i + 1 < allFields.length) {
+      html += `
+        <td width="50%" style="padding-bottom: 16px; vertical-align: top; padding-left: 8px;">
+          <div style="${labelStyle}">${allFields[i + 1].label}</div>
+          <div style="${valueStyle}">${allFields[i + 1].value}</div>
+        </td>`;
+    } else {
+      html += '<td width="50%"></td>';
+    }
+    html += '</tr>';
+  }
+  
+  html += '</table>';
+  return html;
+}
+
 // Function to generate email template HTML
 function generateEmailTemplate(templateType, data, showComments) {
-  let template = '';
-  
   // Ensure comments is an array and filter it
   let comments = [];
   if (showComments) {
@@ -705,93 +766,132 @@ function generateEmailTemplate(templateType, data, showComments) {
     }
   }
 
+  const fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+
   const issueTemplate = `
-    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="text-white p-5 font-semibold" style="background-color: ${issueHeaderColor};">
-        <div class="flex items-center space-x-3">
-          <span class="text-lg">${data.issueKey}</span>
-          <span class="text-sm opacity-75">${data.type}</span>
-        </div>
-        <h1 class="text-xl mt-2">
-          <a href="${jiraBaseUrl}/browse/${data.issueKey}" class="hover:underline" target="_blank">
-            ${data.summary}
-          </a>
-        </h1>
-      </div>
-      <div class="p-6 space-y-4">
-        ${templateType === 'full' ? `
-          <div class="space-y-2">
-            <div class="text-sm text-gray-600">${data.description}</div>
-          </div>
-        ` : ''}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          ${generateFields()}
-        </div>
-
-        ${currentProduct === 'software' ? `
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500 font-medium">Components</div>
-            <div class="flex flex-wrap gap-2">
-              ${Array.isArray(data.components) ? data.components.map(comp => `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  ${comp}
-                </span>
-              `).join('') : ''}
+    <!-- Main Issue Card -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+      <!-- Header -->
+      <tr>
+        <td style="background-color: ${issueHeaderColor}; padding: 20px;">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+              <td>
+                <div style="font-family: ${fontFamily}; color: rgba(255,255,255,0.75); font-size: 14px; margin-bottom: 4px;">
+                  ${data.type}
+                  <span style="display: inline-block; margin: 0 8px;">&bull;</span>
+                  ${data.issueKey}
+                </div>
+                <h1 style="font-family: ${fontFamily}; color: #ffffff; font-size: 20px; font-weight: 600; margin: 5px 0 0 0; line-height: 1.4;">
+                  <a href="${jiraBaseUrl}/browse/${data.issueKey}" style="color: #ffffff; text-decoration: none;">
+                    ${data.summary}
+                  </a>
+                </h1>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      
+      <!-- Content -->
+      <tr>
+        <td style="padding: 24px;">
+          ${templateType === 'full' ? `
+            <div style="font-family: ${fontFamily}; color: #4b5563; font-size: 14px; line-height: 24px; margin-bottom: 24px;">
+              ${data.description}
             </div>
-          </div>
-
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500 font-medium">Labels</div>
-            <div class="flex flex-wrap gap-2">
-              ${Array.isArray(data.labels) ? data.labels.map(label => `
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  ${label}
-                </span>
-              `).join('') : ''}
-            </div>
-          </div>
-        ` : ''}
-      </div>
-    </div>
+            <div style="border-bottom: 1px solid #e5e7eb; margin-bottom: 24px;"></div>
+          ` : ''}
+          
+          ${generateEmailFields(data, showSmartValues)}
+          
+          ${currentProduct === 'software' ? `
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 8px;">
+              <tr>
+                <td style="padding-bottom: 16px;">
+                  <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Components</div>
+                  <div>
+                    ${Array.isArray(data.components) ? data.components.map(comp => `
+                      <span style="display: inline-block; background-color: #f3f4f6; color: #1f2937; border-radius: 9999px; padding: 2px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">
+                        ${comp}
+                      </span>
+                    `).join('') : ''}
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Labels</div>
+                  <div>
+                    ${Array.isArray(data.labels) ? data.labels.map(label => `
+                      <span style="display: inline-block; background-color: #f3f4f6; color: #1f2937; border-radius: 9999px; padding: 2px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">
+                        ${label}
+                      </span>
+                    `).join('') : ''}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          ` : ''}
+        </td>
+      </tr>
+    </table>
   `;
 
   const commentsTemplate = showComments && data.comments && data.comments.length > 0 ? `
-    <div class="mt-6 max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="p-4 font-medium" style="background-color: ${commentsHeaderColor};">
-        Comments
-      </div>
-      <div class="divide-y divide-gray-100">
-        ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map(comment => `
-          <div class="p-4">
-            <div class="flex items-center justify-between">
-              <span class="text-sm font-medium text-gray-900">${comment.author}</span>
-              <span class="text-sm text-gray-500">${comment.created}</span>
+    <!-- Comments Card -->
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+      <tr>
+        <td style="background-color: ${commentsHeaderColor}; padding: 16px 24px;">
+          <div style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #374151;">Comments</div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map((comment, index) => `
+            <div style="padding: 20px 24px; border-bottom: ${index < data.comments.length - 1 ? '1px solid #f3f4f6' : 'none'};">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding-bottom: 8px;">
+                    <span style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #111827;">${comment.author}</span>
+                    <span style="font-family: ${fontFamily}; font-size: 14px; color: #9ca3af; float: right;">${comment.created}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-family: ${fontFamily}; font-size: 14px; color: #4b5563; line-height: 20px;">
+                      ${comment.content}
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </div>
-            <div class="mt-1 text-sm text-gray-600">${comment.content}</div>
-          </div>
-        `).join('') : ''}
-      </div>
-    </div>
+          `).join('') : ''}
+        </td>
+      </tr>
+    </table>
   ` : '';
 
   const viewInJiraButton = `
-    <div class="mt-6 max-w-2xl mx-auto">
-      <a href="${jiraBaseUrl}/browse/${data.issueKey}" 
-         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-         target="_blank">
-        View in Jira
-      </a>
-    </div>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto;">
+      <tr>
+        <td align="center">
+          <a href="${jiraBaseUrl}/browse/${data.issueKey}" target="_blank" style="display: inline-block; background-color: #0052cc; color: #ffffff; font-family: ${fontFamily}; font-size: 14px; font-weight: 500; text-decoration: none; padding: 10px 20px; border-radius: 4px;">
+            View in Jira
+          </a>
+        </td>
+      </tr>
+    </table>
   `;
 
-  return `<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jira Issue - ${data.issueKey}</title>
 </head>
-<body class="bg-gray-50 p-4">
+<body style="margin: 0; padding: 20px; background-color: #f9fafb; -webkit-font-smoothing: antialiased;">
   ${issueTemplate}
   ${commentsTemplate}
   ${viewInJiraButton}
