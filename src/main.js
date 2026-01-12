@@ -194,8 +194,8 @@ const templateData = {
       type: '{{issue.type}}',
       priority: '{{issue.priority}}',
       status: '{{issue.status.name}}',
-      assignee: '{{issue.assignee.name}}',
-      reporter: '{{issue.reporter.name}}',
+      assignee: '{{issue.assignee.displayName}}',
+      reporter: '{{issue.reporter.displayName}}',
       created: '{{issue.created}}',
       updated: '{{issue.updated}}',
       description: '{{issue.description}}',
@@ -702,8 +702,8 @@ function generateEmailFields(data, showSmartValues) {
   const commonFields = [
     { label: 'Status', value: showSmartValues ? '{{issue.status.name}}' : data.status },
     { label: 'Priority', value: showSmartValues ? '{{issue.priority}}' : data.priority },
-    { label: 'Assignee', value: showSmartValues ? '{{issue.assignee.name}}' : data.assignee },
-    { label: 'Reporter', value: showSmartValues ? '{{issue.reporter.name}}' : data.reporter },
+    { label: 'Assignee', value: showSmartValues ? '{{issue.assignee.displayName}}' : data.assignee },
+    { label: 'Reporter', value: showSmartValues ? '{{issue.reporter.displayName}}' : data.reporter },
     { label: 'Created', value: showSmartValues ? '{{issue.created}}' : data.created },
     { label: 'Updated', value: showSmartValues ? '{{issue.updated}}' : data.updated }
   ];
