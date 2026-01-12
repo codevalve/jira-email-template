@@ -693,8 +693,8 @@ function generateTemplate(templateType, data, showComments) {
 
 // Function to generate email fields with inline styles
 function generateEmailFields(data, showSmartValues) {
-  const labelStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #6b7280; font-weight: 500; margin: 0 0 4px 0;';
-  const valueStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #111827; line-height: 20px; margin: 0;';
+  const labelStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px 0;';
+  const valueStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #1f2937; line-height: 20px; font-weight: 400; margin: 0; word-break: break-word;';
   
   // Define fields based on product
   const commonFields = [
@@ -725,24 +725,28 @@ function generateEmailFields(data, showSmartValues) {
     ];
   }
 
-  const allFields = [...commonFields, ...productFields];
-  let html = '<table width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 16px;">';
+  // Filter out empty fields (unless in smart values mode, where we always want to show the placeholder)
+  const activeFields = [...commonFields, ...productFields].filter(field => 
+    showSmartValues || (field.value && field.value !== '')
+  );
+
+  let html = '<table width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 24px;">';
   
-  for (let i = 0; i < allFields.length; i += 2) {
+  for (let i = 0; i < activeFields.length; i += 2) {
     html += '<tr>';
     // First column
     html += `
-      <td width="50%" style="padding-bottom: 16px; vertical-align: top; padding-right: 8px;">
-        <div style="${labelStyle}">${allFields[i].label}</div>
-        <div style="${valueStyle}">${allFields[i].value}</div>
+      <td width="50%" style="padding-bottom: 20px; vertical-align: top; padding-right: 12px;">
+        <div style="${labelStyle}">${activeFields[i].label}</div>
+        <div style="${valueStyle}">${activeFields[i].value}</div>
       </td>`;
     
     // Second column (if exists)
-    if (i + 1 < allFields.length) {
+    if (i + 1 < activeFields.length) {
       html += `
-        <td width="50%" style="padding-bottom: 16px; vertical-align: top; padding-left: 8px;">
-          <div style="${labelStyle}">${allFields[i + 1].label}</div>
-          <div style="${valueStyle}">${allFields[i + 1].value}</div>
+        <td width="50%" style="padding-bottom: 20px; vertical-align: top; padding-left: 12px;">
+          <div style="${labelStyle}">${activeFields[i + 1].label}</div>
+          <div style="${valueStyle}">${activeFields[i + 1].value}</div>
         </td>`;
     } else {
       html += '<td width="50%"></td>';
@@ -770,19 +774,17 @@ function generateEmailTemplate(templateType, data, showComments) {
 
   const issueTemplate = `
     <!-- Main Issue Card -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
       <!-- Header -->
       <tr>
-        <td style="background-color: ${issueHeaderColor}; padding: 20px;">
+        <td style="background-color: ${issueHeaderColor}; padding: 32px 32px 24px 32px;">
           <table width="100%" border="0" cellpadding="0" cellspacing="0">
             <tr>
               <td>
-                <div style="font-family: ${fontFamily}; color: rgba(255,255,255,0.75); font-size: 14px; margin-bottom: 4px;">
-                  ${data.type}
-                  <span style="display: inline-block; margin: 0 8px;">&bull;</span>
-                  ${data.issueKey}
+                <div style="font-family: ${fontFamily}; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.025em;">
+                  ${data.type.toUpperCase()} <span style="opacity: 0.6; margin: 0 6px;">|</span> ${data.issueKey}
                 </div>
-                <h1 style="font-family: ${fontFamily}; color: #ffffff; font-size: 20px; font-weight: 600; margin: 5px 0 0 0; line-height: 1.4;">
+                <h1 style="font-family: ${fontFamily}; color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; line-height: 1.3; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
                   <a href="${jiraBaseUrl}/browse/${data.issueKey}" style="color: #ffffff; text-decoration: none;">
                     ${data.summary}
                   </a>
@@ -795,42 +797,46 @@ function generateEmailTemplate(templateType, data, showComments) {
       
       <!-- Content -->
       <tr>
-        <td style="padding: 24px;">
+        <td style="padding: 32px;">
           ${templateType === 'full' ? `
-            <div style="font-family: ${fontFamily}; color: #4b5563; font-size: 14px; line-height: 24px; margin-bottom: 24px;">
+            <div style="font-family: ${fontFamily}; color: #374151; font-size: 15px; line-height: 24px; margin-bottom: 28px;">
               ${data.description}
             </div>
-            <div style="border-bottom: 1px solid #e5e7eb; margin-bottom: 24px;"></div>
+            <div style="border-bottom: 1px solid #f3f4f6; margin-bottom: 28px;"></div>
           ` : ''}
           
           ${generateEmailFields(data, showSmartValues)}
           
           ${currentProduct === 'software' ? `
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 8px;">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 12px; border-top: 1px solid #f3f4f6; padding-top: 24px;">
+              ${(showSmartValues || (data.components && data.components.length > 0)) ? `
               <tr>
                 <td style="padding-bottom: 16px;">
                   <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Components</div>
                   <div>
                     ${Array.isArray(data.components) ? data.components.map(comp => `
-                      <span style="display: inline-block; background-color: #f3f4f6; color: #1f2937; border-radius: 9999px; padding: 2px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">
+                      <span style="display: inline-block; background-color: #f3f4f6; color: #374151; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 6px; margin-bottom: 6px; border: 1px solid #e5e7eb;">
                         ${comp}
                       </span>
                     `).join('') : ''}
                   </div>
                 </td>
               </tr>
+              ` : ''}
+              ${(showSmartValues || (data.labels && data.labels.length > 0)) ? `
               <tr>
                 <td>
                   <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Labels</div>
                   <div>
                     ${Array.isArray(data.labels) ? data.labels.map(label => `
-                      <span style="display: inline-block; background-color: #f3f4f6; color: #1f2937; border-radius: 9999px; padding: 2px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">
+                      <span style="display: inline-block; background-color: #f3f4f6; color: #374151; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 6px; margin-bottom: 6px; border: 1px solid #e5e7eb;">
                         ${label}
                       </span>
                     `).join('') : ''}
                   </div>
                 </td>
               </tr>
+              ` : ''}
             </table>
           ` : ''}
         </td>
@@ -840,26 +846,26 @@ function generateEmailTemplate(templateType, data, showComments) {
 
   const commentsTemplate = showComments && data.comments && data.comments.length > 0 ? `
     <!-- Comments Card -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
       <tr>
-        <td style="background-color: ${commentsHeaderColor}; padding: 16px 24px;">
-          <div style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #374151;">Comments</div>
+        <td style="background-color: ${commentsHeaderColor}; padding: 16px 32px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+          <div style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #374151;">Activity</div>
         </td>
       </tr>
       <tr>
         <td>
           ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map((comment, index) => `
-            <div style="padding: 20px 24px; border-bottom: ${index < data.comments.length - 1 ? '1px solid #f3f4f6' : 'none'};">
+            <div style="padding: 24px 32px; border-bottom: ${index < data.comments.length - 1 ? '1px solid #f3f4f6' : 'none'};">
               <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="padding-bottom: 8px;">
                     <span style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #111827;">${comment.author}</span>
-                    <span style="font-family: ${fontFamily}; font-size: 14px; color: #9ca3af; float: right;">${comment.created}</span>
+                    <span style="font-family: ${fontFamily}; font-size: 12px; color: #9ca3af; float: right;">${comment.created}</span>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div style="font-family: ${fontFamily}; font-size: 14px; color: #4b5563; line-height: 20px;">
+                    <div style="font-family: ${fontFamily}; font-size: 14px; color: #4b5563; line-height: 22px;">
                       ${comment.content}
                     </div>
                   </td>
@@ -873,12 +879,19 @@ function generateEmailTemplate(templateType, data, showComments) {
   ` : '';
 
   const viewInJiraButton = `
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 32px auto;">
       <tr>
         <td align="center">
-          <a href="${jiraBaseUrl}/browse/${data.issueKey}" target="_blank" style="display: inline-block; background-color: #0052cc; color: #ffffff; font-family: ${fontFamily}; font-size: 14px; font-weight: 500; text-decoration: none; padding: 10px 20px; border-radius: 4px;">
-            View in Jira
+          <a href="${jiraBaseUrl}/browse/${data.issueKey}" target="_blank" style="display: inline-block; background-color: #0052cc; color: #ffffff; font-family: ${fontFamily}; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,82,204,0.2);">
+            Open in Jira
           </a>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="padding-top: 16px;">
+          <div style="font-family: ${fontFamily}; font-size: 12px; color: #9ca3af;">
+            You are receiving this notification because you are watching this issue.
+          </div>
         </td>
       </tr>
     </table>
@@ -891,7 +904,7 @@ function generateEmailTemplate(templateType, data, showComments) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jira Issue - ${data.issueKey}</title>
 </head>
-<body style="margin: 0; padding: 20px; background-color: #f9fafb; -webkit-font-smoothing: antialiased;">
+<body style="margin: 0; padding: 40px 20px; background-color: #f3f4f6; -webkit-font-smoothing: antialiased;">
   ${issueTemplate}
   ${commentsTemplate}
   ${viewInJiraButton}
