@@ -1050,6 +1050,16 @@ function assignHeaderColor(section, color) {
 
 // Initialize the page
 document.addEventListener("DOMContentLoaded", () => {
+  // Load saved Jira URL
+  const savedJiraUrl = localStorage.getItem('jiraBaseUrl');
+  if (savedJiraUrl) {
+    jiraBaseUrl = savedJiraUrl;
+    const jiraUrlInput = document.getElementById('jiraUrl');
+    if (jiraUrlInput) {
+      jiraUrlInput.value = savedJiraUrl;
+    }
+  }
+
   // Set initial active states for buttons
   const defaultProductBtn = document.querySelector('[data-product="software"]');
   defaultProductBtn.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
@@ -1068,7 +1078,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Set up event listeners
   const generateHtmlBtn = document.getElementById("generateHTML");
   if (generateHtmlBtn) {
-    generateHtmlBtn.addEventListener("click", generateHTML);
+    generateHtmlBtn.addEventListener("click", () => {
+      // Validate Jira URL
+      const jiraUrlInput = document.getElementById('jiraUrl');
+      if (!jiraUrlInput || !jiraUrlInput.value.trim() || jiraUrlInput.value.trim() === 'https://your-domain.atlassian.net') {
+        alert('Please enter your valid Jira Instance URL before generating the template.');
+        if (jiraUrlInput) {
+          jiraUrlInput.focus();
+          jiraUrlInput.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+          setTimeout(() => {
+            jiraUrlInput.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+          }, 2000);
+        }
+        return;
+      }
+      generateHTML();
+    });
   }
 
   const copyHtmlBtn = document.getElementById("copyHTML");
@@ -1143,6 +1168,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event listener for Jira URL input
   document.getElementById('jiraUrl').addEventListener('input', (e) => {
     jiraBaseUrl = e.target.value.trim();
+    // Save to local storage
+    localStorage.setItem('jiraBaseUrl', jiraBaseUrl);
     updatePreview();
   });
   
