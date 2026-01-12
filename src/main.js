@@ -206,15 +206,25 @@ const templateData = {
   }
 };
 
-// Global state
+// Global variables
 let currentProduct = 'software';
-let currentTemplate = 'full';
+let issueTemplate = 'full';
+let commentTemplate = 'full';
 let showSmartValues = false;
-let showComments = true;
-let commentDisplayMode = 'all';
-let issueHeaderColor = '#0052CC';  // Jira Blue
-let commentsHeaderColor = '#E9E9E9';
-let jiraBaseUrl = 'https://your-domain.atlassian.net';  // Default Jira URL
+let commentDisplayMode = 'full';
+let jiraBaseUrl = 'https://your-domain.atlassian.net';
+let issueHeaderColor = '#0052CC';
+let commentsHeaderColor = '#f0f0f0';
+
+// Function to assign header colors
+function assignHeaderColor(type, color) {
+  if (type === 'issue') {
+    issueHeaderColor = color;
+  } else if (type === 'comments') {
+    commentsHeaderColor = color;
+  }
+  updatePreview();
+}
 
 // Function to get Jira issue URL
 function getJiraIssueUrl(issueKey) {
@@ -223,75 +233,104 @@ function getJiraIssueUrl(issueKey) {
     : `${jiraBaseUrl}/browse/${issueKey}`;
 }
 
-// Function to generate fields based on product type
-function generateFields() {
-  const data = showSmartValues ? templateData[currentProduct].smart : templateData[currentProduct].mock;
+// Function to get filtered comments based on display mode
+function getFilteredComments(comments) {
+  if (!comments || comments.length === 0) return [];
+  if (commentDisplayMode === 'none') return [];
+  if (commentDisplayMode === 'compact') return [comments[comments.length - 1]];
+  if (commentDisplayMode === 'full') return comments.slice(-5);
+  return [];
+}
+
+// Function to generate fields based on template type and product type
+function generateFields(data, isCompact) {
   let fields = '';
-
-  // Common fields
-  fields += `
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Status</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.status.name}}' : data.status}</div>
-    </div>
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Priority</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.priority}}' : data.priority}</div>
-    </div>
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Assignee</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.assignee}}' : data.assignee}</div>
-    </div>
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Reporter</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.reporter}}' : data.reporter}</div>
-    </div>
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Created</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.created}}' : data.created}</div>
-    </div>
-    <div class="field-group">
-      <div class="text-sm text-gray-500 font-medium">Updated</div>
-      <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.updated}}' : data.updated}</div>
-    </div>
-  `;
-
-  // Product specific fields
-  if (currentProduct === 'software') {
+  
+  if (isCompact) {
+    // Compact template shows only the most important fields in a single column
     fields += `
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Sprint</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.sprint}}' : data.sprint}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Story Points</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.storyPoints}}' : data.storyPoints}</div>
+      <div class="text-gray-600">
+        <div class="mb-2">
+          <span class="font-medium">Priority:</span> ${showSmartValues ? '{{issue.priority}}' : data.priority}
+        </div>
+        <div class="mb-2">
+          <span class="font-medium">Status:</span> ${showSmartValues ? '{{issue.status}}' : data.status}
+        </div>
+        <div class="mb-2">
+          <span class="font-medium">Assignee:</span> ${showSmartValues ? '{{issue.assignee}}' : data.assignee}
+        </div>
       </div>
     `;
-  } else if (currentProduct === 'servicedesk') {
+  } else {
+    // Full template shows all relevant fields in two columns
     fields += `
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Request Type</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.requestType}}' : data.requestType}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Impact</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.impact}}' : data.impact}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">SLA</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.sla}}' : data.sla}</div>
-      </div>
-    `;
-  } else if (currentProduct === 'core') {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <div>
+            <span class="font-medium">Priority:</span> ${showSmartValues ? '{{issue.priority}}' : data.priority}
+          </div>
+          <div>
+            <span class="font-medium">Status:</span> ${showSmartValues ? '{{issue.status}}' : data.status}
+          </div>
+          <div>
+            <span class="font-medium">Assignee:</span> ${showSmartValues ? '{{issue.assignee}}' : data.assignee}
+          </div>
+          <div>
+            <span class="font-medium">Reporter:</span> ${showSmartValues ? '{{issue.reporter}}' : data.reporter}
+          </div>
+          <div>
+            <span class="font-medium">Created:</span> ${showSmartValues ? '{{issue.created}}' : data.created}
+          </div>
+        </div>
+        <div class="space-y-3">`;
+
+    // Add product-specific fields in the second column
+    if (currentProduct === 'software') {
+      fields += `
+          <div>
+            <span class="font-medium">Components:</span> ${showSmartValues ? '{{issue.components}}' : data.components}
+          </div>
+          <div>
+            <span class="font-medium">Fix Version:</span> ${showSmartValues ? '{{issue.fixVersion}}' : data.fixVersion}
+          </div>
+          <div>
+            <span class="font-medium">Sprint:</span> ${showSmartValues ? '{{issue.sprint}}' : data.sprint}
+          </div>
+          <div>
+            <span class="font-medium">Story Points:</span> ${showSmartValues ? '{{issue.storyPoints}}' : data.storyPoints}
+          </div>
+      `;
+    } else if (currentProduct === 'servicedesk') {
+      fields += `
+          <div>
+            <span class="font-medium">Request Type:</span> ${showSmartValues ? '{{issue.requestType}}' : data.requestType}
+          </div>
+          <div>
+            <span class="font-medium">SLA:</span> ${showSmartValues ? '{{issue.sla}}' : data.sla}
+          </div>
+          <div>
+            <span class="font-medium">Customer:</span> ${showSmartValues ? '{{issue.customer}}' : data.customer}
+          </div>
+          <div>
+            <span class="font-medium">Impact:</span> ${showSmartValues ? '{{issue.impact}}' : data.impact}
+          </div>
+      `;
+    } else if (currentProduct === 'core') {
+      fields += `
+          <div>
+            <span class="font-medium">Labels:</span> ${showSmartValues ? '{{issue.labels}}' : data.labels}
+          </div>
+          <div>
+            <span class="font-medium">Due Date:</span> ${showSmartValues ? '{{issue.dueDate}}' : data.dueDate}
+          </div>
+          <div>
+            <span class="font-medium">Category:</span> ${showSmartValues ? '{{issue.category}}' : data.category}
+          </div>
+      `;
+    }
+
     fields += `
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Due Date</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.dueDate}}' : data.dueDate}</div>
-      </div>
-      <div class="field-group">
-        <div class="text-sm text-gray-500 font-medium">Category</div>
-        <div class="text-sm text-gray-900">${showSmartValues ? '{{issue.category}}' : data.category}</div>
+        </div>
       </div>
     `;
   }
@@ -299,707 +338,228 @@ function generateFields() {
   return fields;
 }
 
-// Function to update the template preview
-function updatePreview() {
-  const preview = document.getElementById('previewArea');
-  const data = showSmartValues ? templateData[currentProduct].smart : templateData[currentProduct].mock;
-  
-  // Generate the appropriate template based on currentTemplate
-  const template = generateTemplate(currentTemplate, data, showComments);
-  
-  preview.innerHTML = template;
-}
-
-// Function to get filtered comments based on display mode
-function getFilteredComments(comments) {
-  if (!Array.isArray(comments)) return [];
-  
-  console.log('Filtering comments. Mode:', commentDisplayMode);
-  console.log('Original comments:', comments);
-  
-  // Sort comments by date, most recent first
-  const sortedComments = [...comments].sort((a, b) => 
-    new Date(b.created) - new Date(a.created)
-  );
-  
-  let result;
-  switch (commentDisplayMode) {
-    case 'latest':
-      result = sortedComments.slice(0, 1);
-      break;
-    case 'last5':
-      result = sortedComments.slice(0, 5);
-      break;
-    default:
-      result = sortedComments;
-  }
-  
-  console.log('Filtered comments:', result);
-  return result;
-}
-
 // Function to generate template
-function generateTemplate(templateType, data, showComments) {
+function generateTemplate(templateType, data) {
+  const issueUrl = getJiraIssueUrl(showSmartValues ? '{{issue.key}}' : data.issueKey);
+  const filteredComments = getFilteredComments(data.comments);
+  const isCompact = templateType === 'compact';
+  
   let template = '';
   
-  // Ensure comments is an array and filter it
-  let comments = [];
-  if (showComments) {
-    if (Array.isArray(data.comments)) {
-      comments = getFilteredComments(data.comments);
-    } else if (showSmartValues) {
-      comments = ['{{comment.body.html}}'];
-    }
-  }
-
-  const issueUrl = showSmartValues ? `${jiraBaseUrl}/browse/${data.issueKey}` : getJiraIssueUrl(data.issueKey);
-
-  if (templateType === 'compact') {
-    template = `
-      <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div
-          class="color-block text-white p-3 font-semibold flex items-center justify-between"
-          style="background-color: ${issueHeaderColor};"
-          onclick="triggerColorPicker('issue')">
-          <div class="flex items-center space-x-2">
-            <span class="text-base">${showSmartValues ? '{{issue.key}}' : data.issueKey}</span>
-            <span class="text-xs opacity-75">${showSmartValues ? '{{issue.type}}' : data.type}</span>
-          </div>
-          <input
-            type="color"
-            id="issueColorPicker"
-            class="invisible w-0"
-            value="${issueHeaderColor}"
-            onchange="assignHeaderColor('issue', this.value)"
-            oninput="assignHeaderColor('issue', this.value)">
-        </div>
-        <div class="p-4 space-y-3">
-          <div class="space-y-1">
-            <h1 class="text-lg font-semibold text-gray-900">
-              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
-                ${showSmartValues ? '{{issue.summary}}' : data.summary}
-              </a>
-            </h1>
-          </div>
-          
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <span class="text-gray-500">Status:</span>
-              <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.status.name}}' : data.status}</span>
-            </div>
-            <div>
-              <span class="text-gray-500">Priority:</span>
-              <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.priority}}' : data.priority}</span>
-            </div>
-            <div>
-              <span class="text-gray-500">Assignee:</span>
-              <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.assignee}}' : data.assignee}</span>
-            </div>
-            ${currentProduct === 'software' ? `
-              <div>
-                <span class="text-gray-500">Sprint:</span>
-                <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.sprint}}' : data.sprint}</span>
-              </div>
-            ` : currentProduct === 'servicedesk' ? `
-              <div>
-                <span class="text-gray-500">SLA:</span>
-                <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.sla}}' : data.sla}</span>
-              </div>
-            ` : `
-              <div>
-                <span class="text-gray-500">Due Date:</span>
-                <span class="text-gray-900 ml-1">${showSmartValues ? '{{issue.dueDate}}' : data.dueDate}</span>
-              </div>
-            `}
-          </div>
-
-          ${currentProduct === 'software' ? `
-            <div class="space-y-1">
-              <div class="text-xs text-gray-500">Components</div>
-              <div class="flex flex-wrap gap-1">
-                ${showSmartValues ? `
-                  {{#issue.components}}
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      {{.}}
-                    </span>
-                  {{/issue.components}}
-                ` : Array.isArray(data.components) ? data.components.map(comp => `
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    ${comp}
-                  </span>
-                `).join('') : ''}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-      </div>
-    `;
-
-    if (showComments && comments.length > 0) {
-      template += `
-        <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
-          <div
-            class="color-block text-gray-700 p-2 font-medium flex items-center justify-between"
-            style="background-color: ${commentsHeaderColor};"
-            onclick="triggerColorPicker('comments')">
-            <span class="text-sm">Latest Comment</span>
-            <input
-              type="color"
-              id="commentsColorPicker"
-              class="invisible w-0"
-              value="${commentsHeaderColor}"
-              onchange="assignHeaderColor('comments', this.value)"
-              oninput="assignHeaderColor('comments', this.value)">
-          </div>
-          <div class="p-3 text-sm">
-            ${showSmartValues ? `
-              {{#issue.comments}}
-                <div>
-                  <div class="flex items-center justify-between text-xs mb-1">
-                    <span class="font-medium text-gray-900">{{author.displayName}}</span>
-                    <span class="text-gray-500">{{created.format("yyyy-MM-dd HH:mm")}}</span>
-                  </div>
-                  <div class="text-gray-600">{{body.html}}</div>
-                </div>
-              {{/issue.comments}}
-            ` : Array.isArray(comments) ? comments.slice(0, 1).map(comment => `
-              <div>
-                <div class="flex items-center justify-between text-xs mb-1">
-                  <span class="font-medium text-gray-900">${comment.author}</span>
-                  <span class="text-gray-500">${comment.created}</span>
-                </div>
-                <div class="text-gray-600">${comment.content}</div>
-              </div>
-            `).join('') : ''}
-          </div>
-        </div>
-      `;
-    }
-  } else if (templateType === 'full') {
-    template += `
-      <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div
-          class="color-block text-white p-5 font-semibold flex items-center justify-between"
-          style="background-color: ${issueHeaderColor};"
-          onclick="triggerColorPicker('issue')">
+  // Generate the main issue card with appropriate sizing
+  template += `
+    <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="color-block text-white ${isCompact ? 'p-4' : 'p-5'} font-semibold" style="background-color: ${issueHeaderColor};">
+        <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <span class="text-lg">${showSmartValues ? '{{issue.key}}' : data.issueKey}</span>
+            <span class="${isCompact ? 'text-base' : 'text-lg'}">${showSmartValues ? '{{issue.key}}' : data.issueKey}</span>
             <span class="text-sm opacity-75">${showSmartValues ? '{{issue.type}}' : data.type}</span>
           </div>
-          <input
-            type="color"
-            id="issueColorPicker"
-            class="hidden-color-picker"
-            value="${issueHeaderColor}"
-            onchange="assignHeaderColor('issue', this.value)"
-            oninput="assignHeaderColor('issue', this.value)">
-        </div>
-        <div class="p-6 space-y-4">
-          <div class="space-y-2">
-            <h1 class="text-xl font-semibold text-gray-900">
-              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
-                ${showSmartValues ? '{{issue.summary}}' : data.summary}
-              </a>
-            </h1>
-            <div class="text-sm text-gray-600">${showSmartValues ? '{{issue.description}}' : data.description}</div>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            ${generateFields()}
-          </div>
-
-          ${currentProduct === 'software' ? `
-            <div class="space-y-2">
-              <div class="text-sm text-gray-500 font-medium">Components</div>
-              <div class="flex flex-wrap gap-2">
-                ${showSmartValues ? `
-                  {{#issue.components}}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      {{.}}
-                    </span>
-                  {{/issue.components}}
-                ` : Array.isArray(data.components) ? data.components.map(comp => `
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    ${comp}
-                  </span>
-                `).join('') : ''}
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <div class="text-sm text-gray-500 font-medium">Labels</div>
-              <div class="flex flex-wrap gap-2">
-                ${showSmartValues ? `
-                  {{#issue.labels}}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      {{.}}
-                    </span>
-                  {{/issue.labels}}
-                ` : Array.isArray(data.labels) ? data.labels.map(label => `
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    ${label}
-                  </span>
-                `).join('') : ''}
-              </div>
-            </div>
-          ` : ''}
         </div>
       </div>
-    `;
-
-    if (showComments && data.comments) {
-      template += `
-        <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6">
-          <div
-            class="color-block text-gray-700 p-5 font-medium flex items-center justify-between"
-            style="background-color: ${commentsHeaderColor};"
-            onclick="triggerColorPicker('comments')">
-            <span>Comments</span>
-            <input
-              type="color"
-              id="commentsColorPicker"
-              class="hidden-color-picker"
-              value="${commentsHeaderColor}"
-              onchange="assignHeaderColor('comments', this.value)"
-              oninput="assignHeaderColor('comments', this.value)">
-          </div>
-          <div class="divide-y divide-gray-100">
-            ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map(comment => `
-              <div class="p-6">
-                <div class="flex items-start space-x-3 mb-2">
-                  <div class="flex-1">
-                    <div class="flex items-center space-x-2">
-                      <div class="text-sm font-medium text-gray-900">${comment.author}</div>
-                    </div>
-                    <div class="text-xs text-gray-500 mt-1">
-                      <span>Created: ${comment.created}</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="prose prose-sm max-w-none text-gray-600">
-                  ${comment.content}
-                </div>
-              </div>
-            `).join('') : ''}
-          </div>
+      
+      <div class="${isCompact ? 'p-4' : 'p-6'} space-y-4">
+        <div class="space-y-2">
+          <h1 class="${isCompact ? 'text-lg' : 'text-xl'} font-semibold text-gray-900">
+            <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
+              ${showSmartValues ? '{{issue.summary}}' : data.summary}
+            </a>
+          </h1>
+          ${!isCompact ? `
+          <p class="text-sm text-gray-600">
+            ${showSmartValues ? '{{issue.description}}' : data.description}
+          </p>
+          ` : ''}
         </div>
-      `;
-    }
-  } else {
+
+        ${generateFields(data, isCompact)}
+
+        <div>
+          <a href="${issueUrl}" 
+             class="inline-flex items-center justify-center ${isCompact ? 'px-3 py-1.5 text-sm' : 'px-4 py-2'} font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors"
+             target="_blank">
+            <svg class="w-4 h-4 ${isCompact ? 'mr-1.5' : 'mr-2'}" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z"/>
+            </svg>
+            View in Jira
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Generate comments section if needed
+  if (commentDisplayMode !== 'none' && filteredComments.length > 0) {
+    const isCommentsCompact = commentTemplate === 'compact';
     template += `
-      <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div
-          class="color-block text-white p-4 font-semibold flex items-center justify-between"
-          style="background-color: ${issueHeaderColor};"
-          onclick="triggerColorPicker('issue')">
-          <div class="flex items-center space-x-3">
-            <span class="text-lg">${showSmartValues ? '{{issue.key}}' : data.issueKey}</span>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm opacity-75">${showSmartValues ? '{{issue.type}}' : data.type}</span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/20">
-                ${showSmartValues ? '{{issue.status.name}}' : data.status}
-              </span>
-            </div>
-          </div>
-          <input
-            type="color"
-            id="issueColorPicker"
-            class="hidden-color-picker"
-            value="${issueHeaderColor}"
-            onchange="assignHeaderColor('issue', this.value)"
-            oninput="assignHeaderColor('issue', this.value)">
+      <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+        <div class="color-block text-gray-700 ${isCommentsCompact ? 'p-4' : 'p-5'} font-medium" style="background-color: ${commentsHeaderColor};">
+          <span>Comments ${commentDisplayMode === 'compact' ? '(Latest)' : '(Last 5)'}</span>
         </div>
-        <div class="p-4 space-y-3">
-          <div class="space-y-1">
-            <h1 class="text-lg font-semibold text-gray-900">
-              <a href="${issueUrl}" class="hover:text-blue-600 hover:underline" target="_blank">
-                ${showSmartValues ? '{{issue.summary}}' : data.summary}
-              </a>
-            </h1>
-          </div>
-          
-          <div class="grid grid-cols-2 gap-3 text-sm">
-            <div class="space-y-1">
-              <div class="text-gray-500 font-medium">Assignee</div>
-              <div class="text-gray-700">${showSmartValues ? '{{issue.assignee}}' : data.assignee}</div>
-            </div>
-            <div class="space-y-1">
-              <div class="text-gray-500 font-medium">Priority</div>
-              <div class="text-gray-700">${showSmartValues ? '{{issue.priority}}' : data.priority}</div>
-            </div>
-          </div>
-
-          ${currentProduct === 'software' && Array.isArray(data.labels) ? `
-            <div class="flex flex-wrap gap-1">
-              ${data.labels.map(label => `
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  ${label}
-                </span>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          ${showComments && data.comments ? `
-            <div class="preview-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-4">
-              <div
-                class="color-block p-4 font-medium" style="background-color: ${commentsHeaderColor};"
-                onclick="triggerColorPicker('comments')">
-                <span>Comments</span>
-                <input
-                  type="color"
-                  id="commentsColorPicker"
-                  class="hidden-color-picker"
-                  value="${commentsHeaderColor}"
-                  onchange="assignHeaderColor('comments', this.value)"
-                  oninput="assignHeaderColor('comments', this.value)">
-              </div>
-              <div class="divide-y divide-gray-100">
-                ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map(comment => `
-                  <div class="p-4">
-                    <div class="flex items-start space-x-3 mb-2">
-                      <div class="flex-1">
-                        <div class="flex items-center space-x-2">
-                          <div class="text-sm font-medium text-gray-900">${comment.author}</div>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-1">
-                          <span>Created: ${comment.created}</span>
-                        </div>
-                      </div>
+        <div class="divide-y divide-gray-100">
+          ${filteredComments.map(comment => `
+            <div class="${isCommentsCompact ? 'p-4' : 'p-6'}">
+              <div class="flex items-start space-x-3 mb-2">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2">
+                    <div class="text-sm font-medium text-gray-900">
+                      ${showSmartValues ? '{{comment.author}}' : comment.author}
                     </div>
-                    <div class="mt-1 text-sm text-gray-600">${comment.content}</div>
                   </div>
-                `).join('') : ''}
+                  <div class="text-xs text-gray-500 mt-1">
+                    <span>Created: ${showSmartValues ? '{{comment.created}}' : comment.created}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="prose prose-sm max-w-none text-gray-600">
+                ${showSmartValues ? '{{comment.content}}' : comment.content}
               </div>
             </div>
-          ` : ''}
+          `).join('')}
         </div>
       </div>
     `;
   }
 
+  // Add footer section
   template += `
-    <div class="px-4 pb-4">
-      <a href="${issueUrl}" 
-         class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors"
-         target="_blank">
-        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z"/>
-        </svg>
-        View in Jira
-      </a>
+    <div class="mt-6 pt-4 border-t border-gray-200">
+      <div class="flex items-center justify-between text-xs text-gray-500">
+        <div class="flex items-center space-x-2">
+          <span>${showSmartValues ? '{{issue.key}}' : data.issueKey}</span>
+          <span>•</span>
+          <span>${showSmartValues ? '{{issue.type}}' : data.type}</span>
+          ${showSmartValues ? `
+          <span>•</span>
+          <span>Updated {{issue.updated}}</span>
+          ` : `
+          <span>•</span>
+          <span>Updated ${data.updated}</span>
+          `}
+        </div>
+        <div>
+          <a href="${issueUrl}" class="text-blue-600 hover:underline" target="_blank">View in Jira</a>
+        </div>
+      </div>
+      <div class="mt-2 text-xs text-gray-400 text-right">
+        Generated by Jira Email Template Generator
+      </div>
     </div>
   `;
 
   return template;
 }
 
-// Function to generate email fields with inline styles
-function generateEmailFields(data, showSmartValues) {
-  const labelStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px 0;';
-  const valueStyle = 'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #1f2937; line-height: 20px; font-weight: 400; margin: 0; word-break: break-word;';
-  
-  // Define fields based on product
-  const commonFields = [
-    { label: 'Status', value: showSmartValues ? '{{issue.status.name}}' : data.status },
-    { label: 'Priority', value: showSmartValues ? '{{issue.priority}}' : data.priority },
-    { label: 'Assignee', value: showSmartValues ? '{{issue.assignee.displayName}}' : data.assignee },
-    { label: 'Reporter', value: showSmartValues ? '{{issue.reporter.displayName}}' : data.reporter },
-    { label: 'Created', value: showSmartValues ? '{{issue.created}}' : data.created },
-    { label: 'Updated', value: showSmartValues ? '{{issue.updated}}' : data.updated }
-  ];
-
-  let productFields = [];
-  if (currentProduct === 'software') {
-    productFields = [
-      { label: 'Sprint', value: showSmartValues ? '{{issue.sprint}}' : data.sprint },
-      { label: 'Story Points', value: showSmartValues ? '{{issue.storyPoints}}' : data.storyPoints }
-    ];
-  } else if (currentProduct === 'servicedesk') {
-    productFields = [
-      { label: 'Request Type', value: showSmartValues ? '{{issue.requestType}}' : data.requestType },
-      { label: 'Impact', value: showSmartValues ? '{{issue.impact}}' : data.impact },
-      { label: 'SLA', value: showSmartValues ? '{{issue.sla}}' : data.sla }
-    ];
-  } else if (currentProduct === 'core') {
-    productFields = [
-      { label: 'Due Date', value: showSmartValues ? '{{issue.dueDate}}' : data.dueDate },
-      { label: 'Category', value: showSmartValues ? '{{issue.category}}' : data.category }
-    ];
-  }
-
-  // Filter out empty fields (unless in smart values mode, where we always want to show the placeholder)
-  const activeFields = [...commonFields, ...productFields].filter(field => 
-    showSmartValues || (field.value && field.value !== '')
-  );
-
-  let html = '<table width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-top: 24px;">';
-  
-  for (let i = 0; i < activeFields.length; i += 2) {
-    html += '<tr>';
-    // First column
-    html += `
-      <td width="50%" style="padding-bottom: 20px; vertical-align: top; padding-right: 12px;">
-        <div style="${labelStyle}">${activeFields[i].label}</div>
-        <div style="${valueStyle}">${activeFields[i].value}</div>
-      </td>`;
-    
-    // Second column (if exists)
-    if (i + 1 < activeFields.length) {
-      html += `
-        <td width="50%" style="padding-bottom: 20px; vertical-align: top; padding-left: 12px;">
-          <div style="${labelStyle}">${activeFields[i + 1].label}</div>
-          <div style="${valueStyle}">${activeFields[i + 1].value}</div>
-        </td>`;
-    } else {
-      html += '<td width="50%"></td>';
-    }
-    html += '</tr>';
-  }
-  
-  html += '</table>';
-  return html;
-}
-
 // Function to generate email template HTML
 function generateEmailTemplate(templateType, data, showComments) {
-  // Ensure comments is an array and filter it
-  let comments = [];
+  let issueTemplate = '';
+  let commentsTemplate = '';
+  let signature = '';
+
+  // Generate issue template
+  issueTemplate = `
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background-color: ${issueHeaderColor}; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+        <div style="color: white; display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center;">
+            <span style="font-size: 18px; margin-right: 8px;">{{issue.key}}</span>
+            <span style="opacity: 0.8;">{{issue.type}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 24px; margin: 0 0 16px 0;">
+          <a href="${jiraBaseUrl}/browse/{{issue.key}}" style="color: #0052CC; text-decoration: none;">{{issue.summary}}</a>
+        </h1>
+        <p style="color: #444; margin: 0;">{{issue.description}}</p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+        ${generateFields(data, false)}
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <a href="${jiraBaseUrl}/browse/{{issue.key}}"
+           style="display: inline-flex; align-items: center; padding: 8px 16px; background-color: #0052CC; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500;">
+          <svg style="width: 16px; height: 16px; margin-right: 8px;" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H8l4-4 4 4h-3v4h-2z"/>
+          </svg>
+          View in Jira
+        </a>
+      </div>
+    </div>
+  `;
+
+  // Generate comments template if needed
   if (showComments) {
-    if (Array.isArray(data.comments)) {
-      comments = getFilteredComments(data.comments);
-    } else if (showSmartValues) {
-      comments = ['{{comment.body.html}}'];
-    }
+    commentsTemplate = `
+      <div style="max-width: 600px; margin: 0 auto; padding: 0 20px 20px;">
+        <div style="background-color: ${commentsHeaderColor}; padding: 8px 16px; border-radius: 4px 4px 0 0;">
+          <span style="color: #444; font-weight: 500;">Comments</span>
+        </div>
+        <div style="border: 1px solid #E5E7EB; border-top: none; border-radius: 0 0 4px 4px; overflow: hidden;">
+          {{#comments}}
+            <div style="padding: 16px; border-bottom: 1px solid #E5E7EB;">
+              <div style="margin-bottom: 8px;">
+                <span style="font-weight: 500; color: #111;">{{author}}</span>
+                <span style="color: #666; margin-left: 8px;">{{created}}</span>
+              </div>
+              <div style="color: #444;">{{content}}</div>
+            </div>
+          {{/comments}}
+        </div>
+      </div>
+    `;
   }
 
-  const fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
-
-  const issueTemplate = `
-    <!-- Main Issue Card -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-      <!-- Header -->
-      <tr>
-        <td style="background-color: ${issueHeaderColor}; padding: 32px 32px 24px 32px;">
-          <table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-              <td>
-                <div style="font-family: ${fontFamily}; color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.025em;">
-                  ${data.type.toUpperCase()} <span style="opacity: 0.6; margin: 0 6px;">|</span> ${data.issueKey}
-                </div>
-                <h1 style="font-family: ${fontFamily}; color: #ffffff; font-size: 24px; font-weight: 700; margin: 0; line-height: 1.3; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                  <a href="${jiraBaseUrl}/browse/${data.issueKey}" style="color: #ffffff; text-decoration: none;">
-                    ${data.summary}
-                  </a>
-                </h1>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      
-      <!-- Content -->
-      <tr>
-        <td style="padding: 32px;">
-          ${templateType === 'full' ? `
-            <div style="font-family: ${fontFamily}; color: #374151; font-size: 15px; line-height: 24px; margin-bottom: 28px;">
-              ${data.description}
-            </div>
-            <div style="border-bottom: 1px solid #f3f4f6; margin-bottom: 28px;"></div>
-          ` : ''}
-          
-          ${generateEmailFields(data, showSmartValues)}
-          
-          ${currentProduct === 'software' ? `
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-top: 12px; border-top: 1px solid #f3f4f6; padding-top: 24px;">
-              ${(showSmartValues || (data.components && data.components.length > 0)) ? `
-              <tr>
-                <td style="padding-bottom: 16px;">
-                  <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Components</div>
-                  <div>
-                    ${Array.isArray(data.components) ? data.components.map(comp => `
-                      <span style="display: inline-block; background-color: #f3f4f6; color: #374151; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 6px; margin-bottom: 6px; border: 1px solid #e5e7eb;">
-                        ${comp}
-                      </span>
-                    `).join('') : ''}
-                  </div>
-                </td>
-              </tr>
-              ` : ''}
-              ${(showSmartValues || (data.labels && data.labels.length > 0)) ? `
-              <tr>
-                <td>
-                  <div style="font-family: ${fontFamily}; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Labels</div>
-                  <div>
-                    ${Array.isArray(data.labels) ? data.labels.map(label => `
-                      <span style="display: inline-block; background-color: #f3f4f6; color: #374151; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: ${fontFamily}; font-weight: 500; margin-right: 6px; margin-bottom: 6px; border: 1px solid #e5e7eb;">
-                        ${label}
-                      </span>
-                    `).join('') : ''}
-                  </div>
-                </td>
-              </tr>
-              ` : ''}
-            </table>
-          ` : ''}
-        </td>
-      </tr>
-    </table>
+  // Add footer
+  signature = `
+    <div style="max-width: 600px; margin: 24px auto 0; padding: 16px 20px 0; border-top: 1px solid #E5E7EB;">
+      <div style="display: flex; justify-content: space-between; align-items: center; color: #6B7280; font-size: 12px;">
+        <div style="display: flex; align-items: center;">
+          <span>{{issue.key}}</span>
+          <span style="margin: 0 8px;">•</span>
+          <span>{{issue.type}}</span>
+        </div>
+        <div>
+          <span>Updated {{issue.updated}}</span>
+        </div>
+      </div>
+      <div style="margin-top: 8px; text-align: right; color: #9CA3AF; font-size: 12px;">
+        Generated by Jira
+      </div>
+    </div>
   `;
 
-  const commentsTemplate = showComments && data.comments && data.comments.length > 0 ? `
-    <!-- Comments Card -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 24px auto 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
-      <tr>
-        <td style="background-color: ${commentsHeaderColor}; padding: 16px 32px; border-bottom: 1px solid rgba(0,0,0,0.05);">
-          <div style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #374151;">Activity</div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          ${Array.isArray(data.comments) ? getFilteredComments(data.comments).map((comment, index) => `
-            <div style="padding: 24px 32px; border-bottom: ${index < data.comments.length - 1 ? '1px solid #f3f4f6' : 'none'};">
-              <table width="100%" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="padding-bottom: 8px;">
-                    <span style="font-family: ${fontFamily}; font-size: 14px; font-weight: 600; color: #111827;">${comment.author}</span>
-                    <span style="font-family: ${fontFamily}; font-size: 12px; color: #9ca3af; float: right;">${comment.created}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-family: ${fontFamily}; font-size: 14px; color: #4b5563; line-height: 22px;">
-                      ${comment.content}
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          `).join('') : ''}
-        </td>
-      </tr>
-    </table>
-  ` : '';
-
-  const viewInJiraButton = `
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 32px auto;">
-      <tr>
-        <td align="center">
-          <a href="${jiraBaseUrl}/browse/${data.issueKey}" target="_blank" style="display: inline-block; background-color: #0052cc; color: #ffffff; font-family: ${fontFamily}; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,82,204,0.2);">
-            Open in Jira
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-top: 16px;">
-          <div style="font-family: ${fontFamily}; font-size: 12px; color: #9ca3af;">
-            You are receiving this notification because you are watching this issue.
-          </div>
-        </td>
-      </tr>
-    </table>
-  `;
-
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jira Issue - ${data.issueKey}</title>
-</head>
-<body style="margin: 0; padding: 40px 20px; background-color: #f3f4f6; -webkit-font-smoothing: antialiased;">
-  ${issueTemplate}
-  ${commentsTemplate}
-  ${viewInJiraButton}
-</body>
-</html>`;
+  return `<!DOCTYPE html><html><body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0;">${issueTemplate}${commentsTemplate}${signature}</body></html>`;
 }
 
 // Function to generate HTML for copying
 function generateHTML() {
   // Always use smart values for the minified output
-  const previousSmartValue = showSmartValues;
   showSmartValues = true;
-  
-  // Generate the template with current settings
-  const template = generateEmailTemplate('full', templateData[currentProduct].smart, showComments);
-  
-  // Reset smart values to previous state
-  showSmartValues = previousSmartValue;
-  
-  // Minify the HTML by removing unnecessary whitespace and line breaks
-  const minifiedTemplate = template
-    .replace(/\s+/g, ' ') // Replace multiple spaces with a single space
-    .replace(/>\s+</g, '><') // Remove spaces between tags
-    .replace(/\n/g, '') // Remove line breaks
-    .trim(); // Remove leading/trailing whitespace
+  const template = generateEmailTemplate(issueTemplate, templateData[currentProduct].smart, false);
+  showSmartValues = false; // Reset back to previous state
   
   // Update the output
-  document.getElementById("htmlOutput").value = minifiedTemplate;
+  document.getElementById("htmlOutput").value = template;
 }
 
-// Function to change template type
-function changeTemplate(template) {
-  currentTemplate = template;
-  updatePreview();
-  updateTemplateButtons();
+// Function to update preview
+function updatePreview() {
+  const previewContainer = document.getElementById('previewArea');
+  if (previewContainer) {
+    const data = showSmartValues ? templateData[currentProduct].smart : templateData[currentProduct].mock;
+    previewContainer.innerHTML = generateTemplate(issueTemplate, data);
+  }
 }
 
-// Event listeners for product type buttons
-document.querySelectorAll('[data-product]').forEach(button => {
-  button.addEventListener('click', (e) => {
-    // Update active state
-    document.querySelectorAll('[data-product]').forEach(btn => {
-      btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-      btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-    });
-    e.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-    e.target.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-    
-    // Update current product and refresh preview
-    currentProduct = e.target.dataset.product;
-    updatePreview();
-  });
-});
-
-// Function to toggle between mock data and smart values
-function toggleSmartValues() {
-  showSmartValues = !showSmartValues;
-  updatePreview();
-  updateToggleButton();
-}
-
-// Function to toggle comments visibility
-function toggleComments() {
-  showComments = !showComments;
-  const commentDisplayOptions = document.getElementById('commentDisplayOptions');
-  commentDisplayOptions.style.display = showComments ? 'flex' : 'none';
-  updateCommentsToggle();
-  updatePreview();
-}
-
-// Function to handle comment display mode change
-function changeCommentDisplay(mode) {
-  commentDisplayMode = mode;
-  
-  // Update button states
-  document.querySelectorAll('[data-comment-display]').forEach(button => {
-    if (button.dataset.commentDisplay === mode) {
-      button.classList.remove('bg-gray-100', 'text-gray-700');
-      button.classList.add('bg-blue-600', 'text-white');
-    } else {
-      button.classList.remove('bg-blue-600', 'text-white');
-      button.classList.add('bg-gray-100', 'text-gray-700');
-    }
-  });
-  
-  // Update the preview with new comment display mode
-  updatePreview();
-}
-
-// Function to update the template selection buttons
+// Function to update template buttons
 function updateTemplateButtons() {
-  document.querySelectorAll('[data-template]').forEach(button => {
-    const isActive = button.dataset.template === currentTemplate;
+  const buttons = document.querySelectorAll('[data-template]');
+  buttons.forEach(button => {
+    const isActive = button.dataset.template === issueTemplate;
     button.classList.toggle('bg-blue-600', isActive);
     button.classList.toggle('text-white', isActive);
     button.classList.toggle('bg-gray-100', !isActive);
@@ -1007,99 +567,107 @@ function updateTemplateButtons() {
   });
 }
 
-// Function to update the toggle button text
-function updateToggleButton() {
-  const toggleButton = document.getElementById('toggleView');
-  if (toggleButton) {
-    toggleButton.textContent = showSmartValues ? 'Show Mock Data' : 'Show Smart Values';
-    toggleButton.classList.toggle('bg-blue-600', !showSmartValues);
-    toggleButton.classList.toggle('bg-gray-100', showSmartValues);
-    toggleButton.classList.toggle('text-white', !showSmartValues);
-    toggleButton.classList.toggle('text-gray-700', showSmartValues);
-  }
+// Function to update comments buttons
+function updateCommentButtons() {
+  const buttons = document.querySelectorAll('[data-comment-display]');
+  buttons.forEach(button => {
+    const isActive = button.dataset.commentDisplay === commentDisplayMode;
+    button.classList.toggle('bg-blue-600', isActive);
+    button.classList.toggle('text-white', isActive);
+    button.classList.toggle('bg-gray-100', !isActive);
+    button.classList.toggle('text-gray-700', !isActive);
+  });
 }
 
-// Function to update the comments toggle button
-function updateCommentsToggle() {
-  const button = document.getElementById('commentsToggle');
-  if (button) {
-    button.textContent = showComments ? 'Hide Comments' : 'Show Comments';
-    button.classList.toggle('bg-blue-600', showComments);
-    button.classList.toggle('text-white', showComments);
-    button.classList.toggle('bg-gray-100', !showComments);
-    button.classList.toggle('text-gray-700', !showComments);
-  }
+// Function to change template type
+function changeTemplate(template) {
+  issueTemplate = template;
+  updatePreview();
+  updateTemplateButtons();
 }
 
-// Function to trigger the color picker
-function triggerColorPicker(section) {
-  const colorPickerId = section === "issue" ? "issueColorPicker" : "commentsColorPicker";
-  const colorPicker = document.getElementById(colorPickerId);
-  colorPicker.click();
+// Function to change comment display mode
+function changeCommentDisplay(mode) {
+  commentDisplayMode = mode;
+  updatePreview();
+  updateCommentButtons();
 }
 
-// Function to assign the selected color to the active header
-function assignHeaderColor(section, color) {
-  if (section === "issue") {
-    issueHeaderColor = color;
-  } else if (section === "comments") {
-    commentsHeaderColor = color;
-  }
+// Function to toggle between mock data and smart values
+function toggleSmartValues() {
+  showSmartValues = !showSmartValues;
   updatePreview();
 }
 
-// Initialize the page
-document.addEventListener("DOMContentLoaded", () => {
-  // Load saved Jira URL
-  const savedJiraUrl = localStorage.getItem('jiraBaseUrl');
-  if (savedJiraUrl) {
-    jiraBaseUrl = savedJiraUrl;
-    const jiraUrlInput = document.getElementById('jiraUrl');
-    if (jiraUrlInput) {
-      jiraUrlInput.value = savedJiraUrl;
-    }
-  }
+// Function to toggle comments visibility
+function toggleComments() {
+  commentDisplayMode = commentDisplayMode === 'none' ? 'full' : 'none';
+  updatePreview();
+  updateCommentButtons();
+}
 
+// Initialize UI state
+function initializeUI() {
   // Set initial active states for buttons
   const defaultProductBtn = document.querySelector('[data-product="software"]');
-  defaultProductBtn.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+  if (defaultProductBtn) {
+    defaultProductBtn.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+  }
   
   // Set initial template button state
   const defaultTemplateBtn = document.querySelector('[data-template="full"]');
-  defaultTemplateBtn.classList.add('bg-blue-600', 'text-white');
-  defaultTemplateBtn.classList.remove('bg-gray-100', 'text-gray-700');
+  if (defaultTemplateBtn) {
+    defaultTemplateBtn.classList.add('bg-blue-600', 'text-white');
+    defaultTemplateBtn.classList.remove('bg-gray-100', 'text-gray-700');
+  }
   
   // Initialize UI state
   updatePreview();
-  updateToggleButton();
   updateTemplateButtons();
-  updateCommentsToggle();
+  updateCommentButtons();
   
-  // Set up event listeners
-  const generateHtmlBtn = document.getElementById("generateHTML");
-  if (generateHtmlBtn) {
-    generateHtmlBtn.addEventListener("click", () => {
-      // Validate Jira URL
-      const jiraUrlInput = document.getElementById('jiraUrl');
-      if (!jiraUrlInput || !jiraUrlInput.value.trim() || jiraUrlInput.value.trim() === 'https://your-domain.atlassian.net') {
-        alert('Please enter your valid Jira Instance URL before generating the template.');
-        if (jiraUrlInput) {
-          jiraUrlInput.focus();
-          jiraUrlInput.classList.add('ring-2', 'ring-red-500', 'border-red-500');
-          setTimeout(() => {
-            jiraUrlInput.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
-          }, 2000);
-        }
-        return;
-      }
-      generateHTML();
+  // Set up event listeners for product type buttons
+  document.querySelectorAll('[data-product]').forEach(button => {
+    button.addEventListener('click', (e) => {
+      // Update active state
+      document.querySelectorAll('[data-product]').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+        btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+      });
+      e.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+      e.target.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
+      
+      // Update current product and refresh preview
+      currentProduct = e.target.dataset.product;
+      updatePreview();
     });
+  });
+
+  // Set up event listeners for template buttons
+  document.querySelectorAll('[data-template]').forEach(button => {
+    button.addEventListener('click', (e) => {
+      changeTemplate(e.target.dataset.template);
+    });
+  });
+
+  // Set up event listeners for comment display buttons
+  document.querySelectorAll('[data-comment-display]').forEach(button => {
+    button.addEventListener('click', (e) => {
+      changeCommentDisplay(e.target.dataset.commentDisplay);
+    });
+  });
+
+  // Set up event listener for generate HTML button
+  const generateHtmlBtn = document.getElementById('generateHTML');
+  if (generateHtmlBtn) {
+    generateHtmlBtn.addEventListener('click', generateHTML);
   }
 
-  const copyHtmlBtn = document.getElementById("copyHTML");
+  // Set up event listener for copy HTML button
+  const copyHtmlBtn = document.getElementById('copyHTML');
   if (copyHtmlBtn) {
-    copyHtmlBtn.addEventListener("click", async () => {
-      const htmlOutput = document.getElementById("htmlOutput");
+    copyHtmlBtn.addEventListener('click', async () => {
+      const htmlOutput = document.getElementById('htmlOutput');
       if (htmlOutput && htmlOutput.value) {
         try {
           await navigator.clipboard.writeText(htmlOutput.value);
@@ -1107,7 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Visual feedback
           const originalText = copyHtmlBtn.innerHTML;
           copyHtmlBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
             </svg>
           `;
@@ -1127,61 +695,64 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const smartValuesToggle = document.getElementById("toggleView");
+  // Set up event listener for smart values toggle
+  const smartValuesToggle = document.getElementById('toggleView');
   if (smartValuesToggle) {
-    smartValuesToggle.addEventListener("click", toggleSmartValues);
+    smartValuesToggle.addEventListener('click', toggleSmartValues);
   }
 
-  const commentsToggle = document.getElementById("commentsToggle");
+  // Set up event listener for comments toggle
+  const commentsToggle = document.getElementById('commentsToggle');
   if (commentsToggle) {
-    commentsToggle.addEventListener("click", toggleComments);
+    commentsToggle.addEventListener('click', toggleComments);
+  }
+
+  // Set up event listener for Jira URL input
+  const jiraUrlInput = document.getElementById('jiraUrl');
+  if (jiraUrlInput) {
+    jiraUrlInput.addEventListener('input', (e) => {
+      jiraBaseUrl = e.target.value.trim();
+      updatePreview();
+    });
+  }
+
+  // Set up event listeners for color pickers
+  const issueHeaderPicker = document.getElementById('issueHeaderColor');
+  const commentsHeaderPicker = document.getElementById('commentsHeaderColor');
+  
+  if (issueHeaderPicker) {
+    issueHeaderPicker.value = issueHeaderColor;
+    ['input', 'change'].forEach(event => {
+      issueHeaderPicker.addEventListener(event, (e) => assignHeaderColor('issue', e.target.value));
+    });
   }
   
-  // Template style buttons
-  document.querySelectorAll('[data-template]').forEach(button => {
-    button.addEventListener('click', (e) => {
-      document.querySelectorAll('[data-template]').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('bg-gray-100', 'text-gray-700');
-      });
-      e.target.classList.remove('bg-gray-100', 'text-gray-700');
-      e.target.classList.add('bg-blue-600', 'text-white');
-      currentTemplate = e.target.dataset.template;
-      updatePreview();
+  if (commentsHeaderPicker) {
+    commentsHeaderPicker.value = commentsHeaderColor;
+    ['input', 'change'].forEach(event => {
+      commentsHeaderPicker.addEventListener(event, (e) => assignHeaderColor('comments', e.target.value));
     });
-  });
-  
-  // Product type buttons
-  document.querySelectorAll('[data-product]').forEach(button => {
-    button.addEventListener('click', (e) => {
-      document.querySelectorAll('[data-product]').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-        btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-      });
-      e.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
-      e.target.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700');
-      currentProduct = e.target.dataset.product;
-      updatePreview();
-    });
-  });
+  }
 
-  // Event listener for Jira URL input
-  document.getElementById('jiraUrl').addEventListener('input', (e) => {
-    jiraBaseUrl = e.target.value.trim();
-    // Save to local storage
-    localStorage.setItem('jiraBaseUrl', jiraBaseUrl);
-    updatePreview();
-  });
-  
-  // Comment display options
-  document.querySelectorAll('[data-comment-display]').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const mode = e.target.dataset.commentDisplay;
-      changeCommentDisplay(mode);
+  // Set up event listener for comment display mode
+  const commentModeSelect = document.getElementById('commentDisplayMode');
+  if (commentModeSelect) {
+    commentModeSelect.value = commentDisplayMode;
+    commentModeSelect.addEventListener('change', (e) => {
+      commentDisplayMode = e.target.value;
+      updatePreview();
     });
-  });
-});
+  }
+}
+
+// Initialize the page
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeUI);
+} else {
+  initializeUI();
+}
 
 // Make functions available globally
-window.triggerColorPicker = triggerColorPicker;
-window.assignHeaderColor = assignHeaderColor;
+window.changeTemplate = changeTemplate;
+window.toggleSmartValues = toggleSmartValues;
+window.toggleComments = toggleComments;
